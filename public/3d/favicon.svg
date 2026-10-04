@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#080e1e"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#040814"/>
+    </linearGradient>
+
+    <!-- Neon Cyan Hologram Gradient -->
+    <linearGradient id="cyanHolo" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="50%" stop-color="#00f2fe"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+
+    <!-- Heart Vital Pulse Gradient -->
+    <radialGradient id="heartPulse" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ff4b72"/>
+      <stop offset="60%" stop-color="#e11d48"/>
+      <stop offset="100%" stop-color="#9f1239"/>
+    </radialGradient>
+
+    <!-- Glowing Rim Filter -->
+    <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+
+    <filter id="heartGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- App Icon Squircle Background -->
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bgGrad)" stroke="#00f2fe" stroke-opacity="0.35" stroke-width="4"/>
+  <rect x="24" y="24" width="464" height="464" rx="100" fill="none" stroke="#38bdf8" stroke-opacity="0.15" stroke-width="1.5"/>
+
+  <!-- Anatomical Head & Brain Silhouette -->
+  <g filter="url(#neonGlow)">
+    <!-- Head Outline -->
+    <path d="M256 64 C205 64 172 105 172 152 C172 188 190 216 208 232 L212 258 C213 264 220 270 228 272 L284 272 C292 270 299 264 300 258 L304 232 C322 216 340 188 340 152 C340 105 307 64 256 64 Z" 
+          fill="none" stroke="url(#cyanHolo)" stroke-width="5" stroke-linejoin="round"/>
+
+    <!-- Brain Hemisphere & Sulci lines -->
+    <path d="M256 74 L256 160 M224 96 C240 110 248 126 236 148 M288 96 C272 110 264 126 276 148" 
+          fill="none" stroke="#67e8f9" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+  </g>
+
+  <!-- Cervical Spine & Spinal Column -->
+  <g stroke="url(#cyanHolo)" stroke-width="4" stroke-linecap="round">
+    <line x1="256" y1="265" x2="256" y2="450" stroke-width="5"/>
+    <!-- Vertebrae disks -->
+    <line x1="244" y1="280" x2="268" y2="280"/>
+    <line x1="242" y1="298" x2="270" y2="298"/>
+    <line x1="240" y1="316" x2="272" y2="316"/>
+    <line x1="240" y1="334" x2="272" y2="334"/>
+    <line x1="240" y1="352" x2="272" y2="352"/>
+    <line x1="242" y1="370" x2="270" y2="370"/>
+    <line x1="244" y1="388" x2="268" y2="388"/>
+    <line x1="246" y1="406" x2="266" y2="406"/>
+    <line x1="248" y1="424" x2="264" y2="424"/>
+  </g>
+
+  <!-- Torso & Clavicles Silhouette -->
+  <path d="M228 272 C184 278 128 300 84 340 C76 348 72 360 74 372 L88 450 C90 460 100 468 112 468 L400 468 C412 468 422 460 424 450 L438 372 C440 360 436 348 428 340 C384 300 328 278 284 272" 
+        fill="none" stroke="url(#cyanHolo)" stroke-width="4.5" stroke-linecap="round"/>
+
+  <!-- Ribcage Hologram Curves -->
+  <g fill="none" stroke="url(#cyanHolo)" stroke-width="3.5" stroke-linecap="round" opacity="0.88">
+    <!-- Rib pair 1 -->
+    <path d="M242 298 C190 292 140 318 126 342"/>
+    <path d="M270 298 C322 292 372 318 386 342"/>
+    <!-- Rib pair 2 -->
+    <path d="M240 316 C182 310 132 338 120 364"/>
+    <path d="M272 316 C330 310 380 338 392 364"/>
+    <!-- Rib pair 3 -->
+    <path d="M240 334 C176 330 128 358 118 386"/>
+    <path d="M272 334 C336 330 384 358 394 386"/>
+    <!-- Rib pair 4 -->
+    <path d="M240 352 C178 350 134 380 124 410"/>
+    <path d="M272 352 C334 350 378 380 388 410"/>
+    <!-- Rib pair 5 -->
+    <path d="M242 370 C190 372 150 404 138 432"/>
+    <path d="M270 370 C322 372 362 404 374 432"/>
+  </g>
+
+  <!-- Glowing Heart (Vital Core) -->
+  <g filter="url(#heartGlow)">
+    <path d="M256 342 C248 318 224 308 206 322 C188 336 190 362 208 382 C226 402 254 424 256 426 C258 424 286 402 304 382 C322 362 324 336 306 322 C288 308 264 318 256 342 Z" 
+          fill="url(#heartPulse)" opacity="0.95"/>
+    <circle cx="236" cy="336" r="10" fill="#ffffff" opacity="0.35"/>
+  </g>
+
+  <!-- 3D Orbit Ring indicating Interactive 3D Spatial Rotation -->
+  <ellipse cx="256" cy="360" rx="190" ry="60" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="10 8" opacity="0.55" transform="rotate(-18 256 360)"/>
+  <circle cx="92" cy="316" r="5" fill="#00f2fe" filter="url(#neonGlow)"/>
+  <circle cx="420" cy="404" r="5" fill="#00f2fe" filter="url(#neonGlow)"/>
+</svg>
