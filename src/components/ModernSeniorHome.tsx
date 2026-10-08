@@ -491,6 +491,46 @@ export default function ModernSeniorHome({
                   <span>{userPhone ? 'Quản lý SĐT học tập' : 'Lưu tiến độ qua SĐT'}</span>
                 </button>
 
+                {/* Tông màu giao diện */}
+                <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-1.5">
+                  <span className="text-[11px] font-extrabold uppercase text-slate-400">Tông màu</span>
+                  <div className="grid grid-cols-3 gap-1">
+                    <button
+                      type="button"
+                      onClick={() => handleSelectTheme('emerald')}
+                      className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
+                        activeTheme === 'emerald'
+                          ? 'bg-teal-600 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      🌿 Dưỡng Sinh
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectTheme('sapphire')}
+                      className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
+                        activeTheme === 'sapphire'
+                          ? 'bg-blue-700 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      🔷 Sapphire
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSelectTheme('zen')}
+                      className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
+                        activeTheme === 'zen'
+                          ? 'bg-amber-800 text-white shadow-xs'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      🍂 Nâu Zen
+                    </button>
+                  </div>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -658,76 +698,54 @@ export default function ModernSeniorHome({
             </button>
           </div>
 
-          {/* Tùy chọn chuyển đổi màu giao diện (Dưỡng Sinh · Sapphire · Zen) */}
-          <div className="flex items-center justify-between text-[11px] font-bold bg-black/15 px-2 py-1 rounded-xl">
-            <span className="text-white/80">Tông màu:</span>
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => handleSelectTheme('emerald')}
-                className={`px-2 py-0.5 rounded-lg transition-all ${
-                  activeTheme === 'emerald' ? 'bg-white text-teal-800 shadow-xs font-black' : 'text-white/80 hover:text-white'
-                }`}
-              >
-                🌿 Dưỡng Sinh
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSelectTheme('sapphire')}
-                className={`px-2 py-0.5 rounded-lg transition-all ${
-                  activeTheme === 'sapphire' ? 'bg-white text-blue-900 shadow-xs font-black' : 'text-white/80 hover:text-white'
-                }`}
-              >
-                🔷 Sapphire
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSelectTheme('zen')}
-                className={`px-2 py-0.5 rounded-lg transition-all ${
-                  activeTheme === 'zen' ? 'bg-white text-amber-900 shadow-xs font-black' : 'text-white/80 hover:text-white'
-                }`}
-              >
-                🍂 Nâu Zen
-              </button>
-            </div>
-          </div>
         </header>
       </div>
 
-      <main className="px-4 sm:px-5 flex flex-col gap-4">
+      <main className="px-4 sm:px-5 flex flex-col gap-3">
         {/* 4. BRAND CARD: QBIZ BOOKS · Y KHOA DƯỠNG SINH CÓ HUY HIỆU VÀNG KIM CHUẨN MOCKUP DUYỆT */}
-        <section className="flex items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-50/70 to-white dark:from-slate-900 dark:to-slate-800 border border-amber-200/90 dark:border-amber-900/40 shadow-xs">
+        <section className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-amber-50/70 to-white dark:from-slate-900 dark:to-slate-800 border border-amber-200/90 dark:border-amber-900/40 shadow-xs">
           <div className="flex flex-col">
-            <h2 className="text-[14.5px] sm:text-base font-black text-slate-900 dark:text-white tracking-wide">
+            <h2 className="text-[14px] sm:text-base font-black text-slate-900 dark:text-white tracking-wide">
               {appSubtitle || 'QBIZ BOOKS · Y Khoa Dưỡng Sinh'}
             </h2>
-            <p className="text-[11px] sm:text-[11.5px] text-slate-500 dark:text-slate-400 font-medium">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
               Tủ sách giải phẫu ứng dụng & tự chăm sóc sức khỏe
             </p>
           </div>
 
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 flex items-center justify-center text-amber-900 shadow-xs shrink-0">
-            <Award size={22} className="fill-amber-600/30 text-amber-900" />
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 flex items-center justify-center text-amber-900 shadow-xs shrink-0">
+            <Award size={20} className="fill-amber-600/30 text-amber-900" />
           </div>
         </section>
 
-        {/* 5. CHUYÊN ĐỀ HỌC (LƯỚI 2 CỘT CÓ SỐ THỨ TỰ 1, 2, 3, 4 VÀ ẢNH 3D TƯƠI SÁNG CHUẨN ẢNH DUYỆT) */}
-        <section className="flex flex-col gap-2.5">
+        {/* 5. CHUYÊN ĐỀ HỌC (LƯỚI 2 CỘT CÓ SỐ THỨ TỰ 1, 2, 3, 4 VÀ ẢNH 3D TƯƠI SÁNG) */}
+        <section className="flex flex-col gap-2">
           <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white px-1">
             Chuyên Đề Học
           </h2>
 
-          <div className="grid grid-cols-2 gap-3">
-            {topicsWithCounts.map((item, idx) => {
-              const topic = item.topic;
-              const imgUrl = getTopicImage(topic.slug, topic.cover_url);
-              const orderNum = idx + 1;
+          <div className="grid grid-cols-2 gap-2.5">
+            {topicsWithCounts
+              .filter((item) => {
+                const titleLower = item.topic.title.toLowerCase();
+                const slugLower = item.topic.slug.toLowerCase();
+                return (
+                  !titleLower.includes('tùng') &&
+                  !titleLower.includes('chuyên gia') &&
+                  !slugLower.includes('tung') &&
+                  !slugLower.includes('chuyen-gia')
+                );
+              })
+              .map((item, idx) => {
+                const topic = item.topic;
+                const imgUrl = getTopicImage(topic.slug, topic.cover_url);
+                const orderNum = idx + 1;
 
-              return (
-                <Link
-                  key={topic.id || topic.slug}
-                  href={`/${topic.slug}`}
-                  className="group relative flex items-center justify-between p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-teal-400 shadow-2xs hover:shadow-sm transition-all min-h-[96px] overflow-hidden"
+                return (
+                  <Link
+                    key={topic.id || topic.slug}
+                    href={`/${topic.slug}`}
+                    className="group relative flex items-center justify-between p-2.5 sm:p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-teal-400 shadow-2xs hover:shadow-sm transition-all min-h-[90px] overflow-hidden"
                 >
                   {/* Số thứ tự 1, 2, 3, 4 ở góc trên trái */}
                   <span className={`absolute top-2 left-2 w-5 h-5 rounded-md ${themeClasses.cardBadge} text-[11px] font-black flex items-center justify-center shadow-xs`}>

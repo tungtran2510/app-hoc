@@ -32,7 +32,7 @@ export default function PageCard({
   const hasStarted = isCompleted || watchedCount > 0 || (lastVideo !== undefined && lastVideo > 0);
 
   const durationMin = Math.max(5, count * 5);
-  let subtitle = `${count > 0 ? `${count} video` : 'Bài học'} • ⏱ ~${durationMin} phút`;
+  let subtitle = count > 0 ? `${count} video` : 'Lý thuyết';
   let progressPercent = 0;
 
   if (isCompleted || isAllWatched) {
