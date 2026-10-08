@@ -410,313 +410,281 @@ export default function ModernSeniorHome({
         </div>
       )}
 
-      {/* 2. THANH TIÊU ĐỀ TRÊN ĐỈNH ĐẦU CỦA APP (NÚT XIN CHÀO, CÀI ĐẶT, TÌM KIẾM, SÁNG/TỐI - KHÔNG BAO GIỜ BỎ) */}
-      <div className="px-4 sm:px-5 pt-2 flex items-center justify-between relative z-30">
-        <button
-          type="button"
-          onClick={() => {
-            setNameInput(userName === 'bạn' ? '' : userName);
-            setShowNameModal(true);
-          }}
-          className="flex items-center gap-1.5 text-left group cursor-pointer"
-          title="Bấm để đổi tên của bạn"
-        >
-          <span className="text-[17px] sm:text-[18px] font-black text-slate-900 dark:text-white tracking-tight">
-            Hi, {userName || 'bạn'}! 👋
-          </span>
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowPhoneSync(true);
-            }}
-            className="w-6 h-6 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-600 relative hover:scale-105 transition-transform"
-            title="Đồng bộ tiến độ học tập qua SĐT"
-          >
-            <Bell size={13} fill="currentColor" />
-            <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-red-500" />
-          </span>
-        </button>
+      {/* 2. HEADER DUY NHẤT: HIỆN ĐẠI, TINH GỌN, CHUẨN ĐẸP KHÔNG THỪA THÃI */}
+      <header className="px-4 sm:px-5 pt-3 pb-1 flex flex-col gap-2.5 relative z-30">
+        <div className="flex items-center justify-between gap-2">
+          {/* Cụm Trái: Avatar tác giả + Lời chào thân thiện */}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setShowMenu(!showMenu)}
+                className="w-10 h-10 rounded-full p-[2px] bg-gradient-to-tr from-teal-500 to-emerald-400 shadow-2xs hover:scale-105 transition-transform shrink-0 cursor-pointer flex items-center justify-center"
+                title="Cài đặt & Tài khoản"
+                aria-label="Cài đặt ứng dụng"
+              >
+                <img
+                  src={effectiveAuthor.avatar_url || "/images/author_tung.png"}
+                  alt="Menu"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </button>
 
-        <div className="flex items-center gap-2">
-          {/* Nút tìm kiếm */}
-          <Link
-            href="/tim-kiem"
-            prefetch={true}
-            className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-200 shadow-2xs hover:bg-slate-50 transition-colors"
-            title="Tìm kiếm"
-            aria-label="Tìm kiếm"
-          >
-            <Search size={17} strokeWidth={2.2} />
-          </Link>
-
-          {/* Nút Sáng / Tối */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-amber-500 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
-            title={isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối"}
-            aria-label="Chuyển chế độ Sáng / Tối"
-          >
-            {isDark ? <Sun size={17} strokeWidth={2.2} /> : <Moon size={17} strokeWidth={2.2} />}
-          </button>
-
-          {/* Nút Menu Cài đặt Quản trị & Tài khoản (Avatar viền vàng) */}
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => setShowMenu(!showMenu)}
-              className="w-9 h-9 rounded-full p-[2px] bg-gradient-to-b from-amber-300 via-amber-400 to-amber-600 shadow-sm cursor-pointer hover:scale-105 transition-transform"
-              title="Cài đặt & Quản trị"
-              aria-label="Cài đặt ứng dụng"
-            >
-              <img
-                src={effectiveAuthor.avatar_url || "/images/author_tung.png"}
-                alt="Menu"
-                className="w-full h-full rounded-full object-cover"
-              />
-            </button>
-
-            {/* Dropdown Menu ⋮ Cài đặt */}
-            {showMenu && (
-              <div className="absolute top-[44px] right-0 w-[240px] bg-white text-slate-900 border border-slate-200 rounded-2xl shadow-2xl p-2 flex flex-col gap-1 z-50 animate-in fade-in duration-150 dark:bg-slate-900 dark:border-slate-800 dark:text-white">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMenu(false);
-                    setShowPhoneSync(true);
-                  }}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
-                >
-                  <Smartphone size={16} className="text-teal-600" />
-                  <span>{userPhone ? 'Quản lý SĐT học tập' : 'Lưu tiến độ qua SĐT'}</span>
-                </button>
-
-                {/* Tông màu giao diện */}
-                <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-1.5">
-                  <span className="text-[11px] font-extrabold uppercase text-slate-400">Tông màu</span>
-                  <div className="grid grid-cols-3 gap-1">
-                    <button
-                      type="button"
-                      onClick={() => handleSelectTheme('emerald')}
-                      className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
-                        activeTheme === 'emerald'
-                          ? 'bg-teal-600 text-white shadow-xs'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      🌿 Dưỡng Sinh
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectTheme('sapphire')}
-                      className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
-                        activeTheme === 'sapphire'
-                          ? 'bg-blue-700 text-white shadow-xs'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      🔷 Sapphire
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectTheme('zen')}
-                      className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
-                        activeTheme === 'zen'
-                          ? 'bg-amber-800 text-white shadow-xs'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      🍂 Nâu Zen
-                    </button>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowMenu(false);
-                    setShowPwaInstall(true);
-                  }}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
-                >
-                  <Download size={16} className="text-teal-600" />
-                  <span>Cài app ra màn hình</span>
-                </button>
-
-                {isAdmin ? (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowMenu(false);
-                        handleBackup();
-                      }}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
-                    >
-                      <Download size={16} className="text-teal-600" />
-                      <span>Sao lưu dữ liệu</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowMenu(false);
-                        setShowEditApp(true);
-                      }}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
-                    >
-                      <Edit2 size={16} className="text-teal-600" />
-                      <span>Sửa tên & logo app</span>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowMenu(false);
-                        setSettingsTab('chung');
-                        setShowSettings(true);
-                      }}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
-                    >
-                      <Settings size={16} className="text-teal-600" />
-                      <span>Cài đặt quản trị</span>
-                    </button>
-
-                    <Link
-                      href="/tro-ly-ai"
-                      onClick={() => setShowMenu(false)}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
-                    >
-                      <Sparkles size={16} className="text-amber-500" />
-                      <span>Huấn luyện Trợ lý AI</span>
-                    </Link>
-
-                    <div className="border-t border-slate-200 dark:border-slate-800 my-1" />
-
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-red-600 hover:bg-red-50 cursor-pointer"
-                    >
-                      <LogOut size={16} />
-                      <span>Đăng xuất</span>
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    href="/dang-nhap"
-                    onClick={() => setShowMenu(false)}
-                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13.5px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+              {/* Dropdown Menu ⋮ Cài đặt & Quản trị */}
+              {showMenu && (
+                <div className="absolute top-[46px] left-0 w-[240px] bg-white text-slate-900 border border-slate-200 rounded-2xl shadow-2xl p-2 flex flex-col gap-1 z-50 animate-in fade-in duration-150 dark:bg-slate-900 dark:border-slate-800 dark:text-white">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMenu(false);
+                      setShowPhoneSync(true);
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
                   >
-                    <User size={16} className="text-teal-600" />
-                    <span>Đăng nhập quản trị</span>
-                  </Link>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+                    <Smartphone size={16} className="text-teal-600" />
+                    <span>{userPhone ? 'Quản lý SĐT học tập' : 'Lưu tiến độ qua SĐT'}</span>
+                  </button>
 
-      {showMenu && (
-        <div className="fixed inset-0 z-20 bg-transparent" onClick={() => setShowMenu(false)} />
-      )}
+                  {/* Tông màu giao diện */}
+                  <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-extrabold uppercase text-slate-400">Tông màu</span>
+                    <div className="grid grid-cols-3 gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectTheme('emerald')}
+                        className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
+                          activeTheme === 'emerald'
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        🌿 Dưỡng Sinh
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSelectTheme('sapphire')}
+                        className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
+                          activeTheme === 'sapphire'
+                            ? 'bg-blue-700 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        🔷 Sapphire
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSelectTheme('zen')}
+                        className={`py-1 px-1 rounded-lg text-[10.5px] font-bold text-center transition-all ${
+                          activeTheme === 'zen'
+                            ? 'bg-amber-800 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        🍂 Nâu Zen
+                      </button>
+                    </div>
+                  </div>
 
-      {/* 3. KHỐI HEADER XANH DƯỠNG SINH CHUẨN THIẾT KẾ ĐÃ DUYỆT (flawless_full_home) */}
-      <div className="px-4 sm:px-5">
-        <header className={`${themeClasses.headerBg} text-white p-4 sm:p-5 rounded-3xl shadow-md flex flex-col gap-3 transition-colors duration-300`}>
-          {/* Hàng 1: Avatar + Lời chào + Bộ chỉnh cỡ chữ [A- A+] trên 1 dòng gọn gàng, không bị xuống dòng */}
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 min-w-0 flex-1">
-              <img
-                src={effectiveAuthor.avatar_url || '/images/author_tung.png'}
-                alt="Avatar"
-                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white/80 shadow-xs shrink-0"
-              />
-              <span className="text-[12.5px] sm:text-[14px] font-bold text-white leading-tight">
-                Chào bạn, chúc ngày mới an lành!
-              </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowMenu(false);
+                      setShowPwaInstall(true);
+                    }}
+                    className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+                  >
+                    <Download size={16} className="text-teal-600" />
+                    <span>Cài app ra màn hình</span>
+                  </button>
+
+                  {isAdmin ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowMenu(false);
+                          handleBackup();
+                        }}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+                      >
+                        <Download size={16} className="text-teal-600" />
+                        <span>Sao lưu dữ liệu</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowMenu(false);
+                          setShowEditApp(true);
+                        }}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+                      >
+                        <Edit2 size={16} className="text-teal-600" />
+                        <span>Sửa tên & logo app</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowMenu(false);
+                          setSettingsTab('chung');
+                          setShowSettings(true);
+                        }}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+                      >
+                        <Settings size={16} className="text-teal-600" />
+                        <span>Cài đặt quản trị</span>
+                      </button>
+
+                      <Link
+                        href="/tro-ly-ai"
+                        onClick={() => setShowMenu(false)}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+                      >
+                        <Sparkles size={16} className="text-amber-500" />
+                        <span>Huấn luyện Trợ lý AI</span>
+                      </Link>
+
+                      <div className="border-t border-slate-200 dark:border-slate-800 my-1" />
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-red-600 hover:bg-red-50 cursor-pointer"
+                      >
+                        <LogOut size={16} />
+                        <span>Đăng xuất</span>
+                      </button>
+                    </>
+                  ) : (
+                    <Link
+                      href="/dang-nhap"
+                      onClick={() => setShowMenu(false)}
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-left text-[13px] font-bold text-slate-800 hover:bg-slate-100 dark:text-white dark:hover:bg-slate-800 cursor-pointer"
+                    >
+                      <User size={16} className="text-teal-600" />
+                      <span>Đăng nhập quản trị</span>
+                    </Link>
+                  )}
+                </div>
+              )}
             </div>
 
-            <div className="flex items-center gap-1 bg-white/20 backdrop-blur-xs p-1 rounded-2xl border border-white/30 shrink-0">
+            <div className="flex flex-col min-w-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setNameInput(userName === 'bạn' ? '' : userName);
+                  setShowNameModal(true);
+                }}
+                className="flex items-center gap-1 text-left cursor-pointer group"
+                title="Bấm để đổi tên của bạn"
+              >
+                <span className="text-[16px] sm:text-[17px] font-black text-slate-900 dark:text-white tracking-tight truncate group-hover:text-teal-600 transition-colors">
+                  Hi, {userName || 'bạn'}! 👋
+                </span>
+                <span
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowPhoneSync(true);
+                  }}
+                  className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-600 relative hover:scale-105 transition-transform shrink-0"
+                  title="Đồng bộ tiến độ học tập qua SĐT"
+                >
+                  <Bell size={11} fill="currentColor" />
+                  <span className="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-red-500" />
+                </span>
+              </button>
+              <span className="text-[11.5px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                Chúc bạn ngày mới an lành!
+              </span>
+            </div>
+          </div>
+
+          {/* Cụm Phải: Bộ chỉnh cỡ chữ [A- A+] + Nút Sáng/Tối */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Bộ chỉnh cỡ chữ [A- A+] */}
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
               <button
                 type="button"
                 onClick={() => handleToggleFont('normal')}
-                className={`px-2.5 py-0.5 rounded-xl text-xs font-black transition-all ${
+                className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
                   fontScale === 'normal'
-                    ? 'bg-white text-slate-900 shadow-2xs'
-                    : 'text-white/80 hover:text-white'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                 }`}
+                title="Cỡ chữ chuẩn"
               >
                 A-
               </button>
               <button
                 type="button"
                 onClick={() => handleToggleFont('large')}
-                className={`px-2.5 py-0.5 rounded-xl text-xs font-black transition-all ${
+                className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
                   fontScale === 'large' || fontScale === 'xlarge'
-                    ? 'bg-white text-slate-900 shadow-2xs'
-                    : 'text-white/80 hover:text-white'
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
                 }`}
+                title="Cỡ chữ to"
               >
                 A+
               </button>
             </div>
-          </div>
 
-          {/* Thanh tìm kiếm hình viên thuốc trắng với Micro xanh ở góc phải chuẩn ảnh duyệt */}
-          <div className="relative flex items-center bg-white rounded-full p-1.5 shadow-sm">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchQuery.trim()) {
-                  window.location.href = `/tim-kiem?q=${encodeURIComponent(searchQuery.trim())}`;
-                }
-              }}
-              placeholder={
-                isListening
-                  ? 'Đang lắng nghe... Mời bạn nói...'
-                  : 'Tìm kiếm bài học, chuyên đề...'
-              }
-              className="w-full pl-4 pr-11 py-1.5 bg-transparent text-slate-800 placeholder:text-slate-400 font-medium text-sm focus:outline-none"
-            />
-
+            {/* Nút Sáng / Tối */}
             <button
               type="button"
-              onClick={handleVoiceSearch}
-              className={`absolute right-1.5 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                isListening
-                  ? 'bg-rose-500 text-white animate-pulse'
-                  : 'bg-teal-600 hover:bg-teal-700 text-white shadow-xs'
-              }`}
-              title="Bấm để nói tìm kiếm"
-              aria-label="Nói để tìm kiếm"
+              onClick={toggleTheme}
+              className="w-8.5 h-8.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-amber-500 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
+              title={isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối"}
+              aria-label="Chuyển chế độ Sáng / Tối"
             >
-              {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+              {isDark ? <Sun size={15} strokeWidth={2.4} /> : <Moon size={15} strokeWidth={2.4} />}
             </button>
           </div>
+        </div>
 
-        </header>
-      </div>
+        {/* Thanh tìm kiếm hình viên thuốc trắng với Micro xanh ở góc phải */}
+        <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs focus-within:border-teal-500 transition-colors p-1">
+          <Search size={16} className="ml-3 text-slate-400 shrink-0" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && searchQuery.trim()) {
+                window.location.href = `/tim-kiem?q=${encodeURIComponent(searchQuery.trim())}`;
+              }
+            }}
+            placeholder={
+              isListening
+                ? 'Đang lắng nghe... Mời bạn nói...'
+                : 'Tìm kiếm bài học, chuyên đề, giải phẫu...'
+            }
+            className="w-full pl-2.5 pr-10 py-1.5 bg-transparent text-slate-800 dark:text-white placeholder:text-slate-400 font-medium text-sm focus:outline-none"
+          />
+
+          <button
+            type="button"
+            onClick={handleVoiceSearch}
+            className={`absolute right-1.5 w-7.5 h-7.5 rounded-xl flex items-center justify-center transition-all ${
+              isListening
+                ? 'bg-rose-500 text-white animate-pulse'
+                : 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-slate-700 cursor-pointer'
+            }`}
+            title="Bấm để nói tìm kiếm"
+            aria-label="Nói để tìm kiếm"
+          >
+            {isListening ? <MicOff size={14} /> : <Mic size={14} />}
+          </button>
+        </div>
+      </header>
+
+      {showMenu && (
+        <div className="fixed inset-0 z-20 bg-transparent" onClick={() => setShowMenu(false)} />
+      )}
 
       <main className="px-4 sm:px-5 flex flex-col gap-3">
-        {/* 4. BRAND CARD: QBIZ BOOKS · Y KHOA DƯỠNG SINH CÓ HUY HIỆU VÀNG KIM CHUẨN MOCKUP DUYỆT */}
-        <section className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-amber-50/70 to-white dark:from-slate-900 dark:to-slate-800 border border-amber-200/90 dark:border-amber-900/40 shadow-xs">
-          <div className="flex flex-col">
-            <h2 className="text-[14px] sm:text-base font-black text-slate-900 dark:text-white tracking-wide">
-              {appSubtitle || 'QBIZ BOOKS · Y Khoa Dưỡng Sinh'}
-            </h2>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Tủ sách giải phẫu ứng dụng & tự chăm sóc sức khỏe
-            </p>
-          </div>
-
-          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-400 to-amber-200 flex items-center justify-center text-amber-900 shadow-xs shrink-0">
-            <Award size={20} className="fill-amber-600/30 text-amber-900" />
-          </div>
-        </section>
 
         {/* 5. CHUYÊN ĐỀ HỌC (LƯỚI 2 CỘT CÓ SỐ THỨ TỰ 1, 2, 3, 4 VÀ ẢNH 3D TƯƠI SÁNG) */}
         <section className="flex flex-col gap-2">
