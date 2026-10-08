@@ -394,68 +394,68 @@ export default function ModernSeniorHome({
     if (slug.includes('cot-song')) {
       return {
         displayTitle: 'Hệ xương khớp',
-        bgCircle: 'bg-[#E0F2F1] dark:bg-teal-950/70 text-teal-700',
-        iconUrl: '/images/topics_transparent/cot-song.png',
+        iconUrl: '/images/therapeutic_badges/khop_goi.png',
+        order: 1,
       };
     }
     if (slug.includes('tieu-hoa')) {
       return {
         displayTitle: 'Tiêu hóa',
-        bgCircle: 'bg-[#FFF3E0] dark:bg-amber-950/70 text-amber-700',
-        iconUrl: '/images/topics_transparent/tieu-hoa.png',
+        iconUrl: '/images/therapeutic_badges/tieu_hoa.png',
+        order: 2,
       };
     }
-    if (slug.includes('co-the-nguoi')) {
+    if (slug.includes('co-the-nguoi') || slug.includes('tim')) {
       return {
         displayTitle: 'Tim mạch',
-        bgCircle: 'bg-[#FFEBEE] dark:bg-rose-950/70 text-rose-700',
-        iconUrl: '/images/topics_transparent/co-the-nguoi.png',
+        iconUrl: '/images/therapeutic_badges/tim_mach.png',
+        order: 3,
       };
     }
-    if (slug.includes('mien-dich')) {
+    if (slug.includes('mien-dich') || slug.includes('giac-ngu')) {
       return {
         displayTitle: 'Giấc ngủ',
-        bgCircle: 'bg-[#E0F2F1] dark:bg-cyan-950/70 text-teal-800',
-        iconUrl: '/images/topics_transparent/mien-dich.png',
+        iconUrl: '/images/therapeutic_badges/giac_ngu.png',
+        order: 4,
       };
     }
     if (slug.includes('dinh-duong')) {
       return {
         displayTitle: 'Dinh dưỡng',
-        bgCircle: 'bg-[#FEF9C3] dark:bg-yellow-950/70 text-yellow-800',
-        iconUrl: '/images/topics_transparent/dinh-duong.png',
+        iconUrl: '/images/therapeutic_badges/dinh_duong.png',
+        order: 5,
       };
     }
     if (slug.includes('nuoc')) {
       return {
         displayTitle: 'Nước & Điện giải',
-        bgCircle: 'bg-[#E0F7FA] dark:bg-cyan-950/70 text-cyan-800',
-        iconUrl: '/images/topics_transparent/nuoc.png',
+        iconUrl: '/images/therapeutic_badges/nuoc.png',
+        order: 6,
       };
     }
     if (slug.includes('gan-mat-tuy')) {
       return {
         displayTitle: 'Gan – Mật – Tụy',
-        bgCircle: 'bg-[#FFF8E1] dark:bg-amber-950/70 text-amber-800',
-        iconUrl: '/images/topics_transparent/gan-mat-tuy.png',
+        iconUrl: '/images/therapeutic_badges/gan_mat_tuy.png',
+        order: 7,
       };
     }
     if (slug.includes('noi-tiet')) {
       return {
         displayTitle: 'Nội tiết',
-        bgCircle: 'bg-[#F3E8FF] dark:bg-purple-950/70 text-purple-800',
-        iconUrl: '/images/topics_transparent/noi-tiet-chuyen-hoa.png',
+        iconUrl: '/images/therapeutic_badges/noi_tiet.png',
+        order: 8,
       };
     }
     return {
       displayTitle: title,
-      bgCircle: 'bg-slate-100 dark:bg-slate-800 text-slate-700',
-      iconUrl: '/images/topics_transparent/cot-song.png',
+      iconUrl: '/images/therapeutic_badges/khop_goi.png',
+      order: 99,
     };
   };
 
   return (
-    <div className={`w-full min-h-screen flex flex-col gap-3.5 pb-28 select-none bg-[#FAF9F6] dark:bg-slate-950 text-slate-800 dark:text-slate-100 ${scaleClass}`}>
+    <div className={`w-full min-h-screen flex flex-col gap-3.5 pb-28 select-none ${layoutStyle === 'therapeutic' ? 'bg-[#F8F6F0] dark:bg-slate-950' : 'bg-[#FAF9F6] dark:bg-slate-950'} text-slate-800 dark:text-slate-100 ${scaleClass}`}>
       
       {/* 1. KHỐI THANH ĐEN QUẢN TRỊ ADMIN (NẾU ĐĂNG NHẬP ADMIN - GIỮ NGUYÊN 100% CÀI ĐẶT MẶC ĐỊNH CỦA APP) */}
       {isAdmin && (
@@ -551,6 +551,57 @@ export default function ModernSeniorHome({
                     <Smartphone size={16} className="text-teal-600" />
                     <span>{userPhone ? 'Quản lý SĐT học tập' : 'Lưu tiến độ qua SĐT'}</span>
                   </button>
+
+                  {/* Cỡ chữ */}
+                  <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold uppercase text-slate-400">Cỡ chữ</span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleFont('normal')}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all ${
+                          fontScale === 'normal'
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        A- Chuẩn
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleToggleFont('large')}
+                        className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all ${
+                          fontScale === 'large' || fontScale === 'xlarge'
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        A+ To
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Chế độ Sáng / Tối */}
+                  <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span className="text-[11px] font-extrabold uppercase text-slate-400">Giao diện</span>
+                    <button
+                      type="button"
+                      onClick={toggleTheme}
+                      className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition-colors"
+                    >
+                      {isDark ? (
+                        <>
+                          <Sun size={13} className="text-amber-400" />
+                          <span>Bật nền sáng</span>
+                        </>
+                      ) : (
+                        <>
+                          <Moon size={13} className="text-indigo-400" />
+                          <span>Bật nền tối</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
 
                   {/* Tông màu giao diện */}
                   <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-1.5">
@@ -747,58 +798,72 @@ export default function ModernSeniorHome({
             )}
           </div>
 
-          {/* Cụm Phải: Bộ chỉnh cỡ chữ [A- A+] + Nút Sáng/Tối + Nút chuyển mẫu */}
-          <div className="flex items-center gap-1.5 shrink-0 self-start mt-0.5">
-            {/* Bộ chỉnh cỡ chữ [A- A+] */}
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
+          {/* Cụm Phải: Mẫu Trị Liệu chỉ có nút Sáng/Tối tối giản, Mẫu Tinh Gọn có cụm công cụ đầy đủ */}
+          {layoutStyle === 'therapeutic' ? (
+            <div className="flex items-center gap-1.5 shrink-0 self-start mt-1">
               <button
                 type="button"
-                onClick={() => handleToggleFont('normal')}
-                className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
-                  fontScale === 'normal'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
-                    : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-                }`}
-                title="Cỡ chữ chuẩn"
+                onClick={toggleTheme}
+                className="w-9 h-9 rounded-full bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-amber-400 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
+                title={isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối"}
+                aria-label="Chuyển chế độ Sáng / Tối"
               >
-                A-
-              </button>
-              <button
-                type="button"
-                onClick={() => handleToggleFont('large')}
-                className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
-                  fontScale === 'large' || fontScale === 'xlarge'
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
-                    : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
-                }`}
-                title="Cỡ chữ to"
-              >
-                A+
+                {isDark ? <Sun size={16} strokeWidth={2.2} /> : <Moon size={16} strokeWidth={2.2} />}
               </button>
             </div>
+          ) : (
+            <div className="flex items-center gap-1.5 shrink-0 self-start mt-0.5">
+              {/* Bộ chỉnh cỡ chữ [A- A+] */}
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
+                <button
+                  type="button"
+                  onClick={() => handleToggleFont('normal')}
+                  className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
+                    fontScale === 'normal'
+                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                      : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  }`}
+                  title="Cỡ chữ chuẩn"
+                >
+                  A-
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleFont('large')}
+                  className={`px-2 py-0.5 rounded-lg text-[11px] font-black transition-all ${
+                    fontScale === 'large' || fontScale === 'xlarge'
+                      ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-2xs'
+                      : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                  }`}
+                  title="Cỡ chữ to"
+                >
+                  A+
+                </button>
+              </div>
 
-            {/* Nút Sáng / Tối */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-amber-500 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
-              title={isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối"}
-              aria-label="Chuyển chế độ Sáng / Tối"
-            >
-              {isDark ? <Sun size={15} strokeWidth={2.4} /> : <Moon size={15} strokeWidth={2.4} />}
-            </button>
+              {/* Nút Sáng / Tối */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-amber-500 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
+                title={isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối"}
+                aria-label="Chuyển chế độ Sáng / Tối"
+              >
+                {isDark ? <Sun size={15} strokeWidth={2.4} /> : <Moon size={15} strokeWidth={2.4} />}
+              </button>
 
-            {/* Nút chuyển đổi nhanh giữa 2 Mẫu giao diện */}
-            <button
-              type="button"
-              onClick={() => handleSelectLayoutStyle(layoutStyle === 'therapeutic' ? 'compact' : 'therapeutic')}
-              className="w-8 h-8 rounded-xl bg-teal-50 dark:bg-slate-800 border border-teal-200/80 dark:border-slate-700 flex items-center justify-center text-teal-700 dark:text-teal-400 transition-colors shadow-2xs cursor-pointer hover:bg-teal-100"
-              title={layoutStyle === 'therapeutic' ? "Đang là Mẫu Trị Liệu - Bấm đổi sang Mẫu Tinh Gọn" : "Đang là Mẫu Tinh Gọn - Bấm đổi sang Mẫu Trị Liệu"}
-              aria-label="Đổi mẫu giao diện"
-            >
-              <SlidersHorizontal size={14} />
-            </button>
-          </div>
+              {/* Nút chuyển đổi nhanh giữa 2 Mẫu giao diện */}
+              <button
+                type="button"
+                onClick={() => handleSelectLayoutStyle('therapeutic')}
+                className="w-8 h-8 rounded-xl bg-teal-50 dark:bg-slate-800 border border-teal-200/80 dark:border-slate-700 flex items-center justify-center text-teal-700 dark:text-teal-400 transition-colors shadow-2xs cursor-pointer hover:bg-teal-100"
+                title="Đang là Mẫu Tinh Gọn - Bấm đổi sang Mẫu Trị Liệu"
+                aria-label="Đổi mẫu giao diện"
+              >
+                <SlidersHorizontal size={14} />
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Thanh tìm kiếm theo từng Mẫu */}
@@ -913,10 +978,10 @@ export default function ModernSeniorHome({
                   </div>
                 </div>
 
-                {/* Ảnh giải phẫu 3D Cột sống & Khớp */}
+                {/* Ảnh giải phẫu 3D Cột sống & Khớp đúng chuẩn ảnh mẫu */}
                 <Link href="/cot-song" className="w-28 sm:w-32 h-28 sm:h-32 shrink-0 flex items-center justify-center relative group">
                   <img
-                    src="/images/topics_transparent/cot-song.png"
+                    src="/images/therapeutic_badges/hero_spine.png"
                     alt="Dưỡng Khớp & Cột Sống"
                     className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
                   />
@@ -931,7 +996,7 @@ export default function ModernSeniorHome({
               </div>
             </section>
 
-            {/* 2. LƯỚI CHUYÊN ĐỀ 2 CỘT (THẺ BO TRÒN MỀM MẠI, VÒNG TRÒN PASTEL Ở GIỮA) */}
+            {/* 2. LƯỚI CHUYÊN ĐỀ 2 CỘT (CỐ ĐỊNH 4 VỊ TRÍ VÀNG: XƯƠNG KHỚP, TIÊU HÓA, TIM MẠCH, GIẤC NGỦ) */}
             <section className="grid grid-cols-2 gap-3 sm:gap-3.5">
               {topicsWithCounts
                 .filter((item) => {
@@ -944,6 +1009,11 @@ export default function ModernSeniorHome({
                     !slugLower.includes('chuyen-gia')
                   );
                 })
+                .sort((a, b) => {
+                  const orderA = getTherapeuticTopicConfig(a.topic.slug, a.topic.title).order;
+                  const orderB = getTherapeuticTopicConfig(b.topic.slug, b.topic.title).order;
+                  return orderA - orderB;
+                })
                 .map((item) => {
                   const topic = item.topic;
                   const conf = getTherapeuticTopicConfig(topic.slug, topic.title);
@@ -952,9 +1022,9 @@ export default function ModernSeniorHome({
                     <Link
                       key={topic.id || topic.slug}
                       href={`/${topic.slug}`}
-                      className="h-[142px] flex flex-col items-center justify-center gap-2.5 p-3 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-100/90 dark:border-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:-translate-y-0.5 transition-all text-center group cursor-pointer"
+                      className="h-[142px] flex flex-col items-center justify-center gap-2 p-3 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-100/90 dark:border-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:-translate-y-0.5 transition-all text-center group cursor-pointer"
                     >
-                      <div className={`w-14 h-14 rounded-full flex items-center justify-center p-2.5 shrink-0 ${conf.bgCircle} shadow-2xs group-hover:scale-110 transition-transform overflow-hidden`}>
+                      <div className="w-16 h-16 flex items-center justify-center shrink-0 group-hover:scale-108 transition-transform">
                         <img
                           src={conf.iconUrl}
                           alt={conf.displayTitle}

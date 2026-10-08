@@ -22,9 +22,9 @@ export default function FloatingAiButton() {
     !nonTopicPaths.includes(parts[0])
   );
 
-  // NÚT AI HIỆN DIỆN Ở MỌI NƠI TRÊN TOÀN BỘ ỨNG DỤNG (Trang chủ, Chuyên đề, Bài học, Đã lưu, Tìm kiếm, 3D...)
-  // Chỉ ẩn khi đang ở trong chính phòng chat Trợ lý AI (/tro-ly-ai) hoặc trang đăng nhập/quản trị
-  const isHidden = !pathname || pathname.startsWith('/tro-ly-ai') || pathname.startsWith('/admin') || pathname.startsWith('/dang-nhap');
+  // NÚT AI HIỆN DIỆN TRONG CÁC BÀI HỌC VÀ CHUYÊN ĐỀ
+  // Ẩn ở trang chủ (để không che thẻ chuyên đề), phòng chat Trợ lý AI (/tro-ly-ai) hoặc trang đăng nhập/quản trị
+  const isHidden = !pathname || pathname === '/' || pathname.startsWith('/tro-ly-ai') || pathname.startsWith('/admin') || pathname.startsWith('/dang-nhap');
 
   const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const [isHolding, setIsHolding] = useState(false);
