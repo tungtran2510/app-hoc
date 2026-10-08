@@ -14,6 +14,8 @@ import {
   Bell,
   Sun,
   Moon,
+  Volume2,
+  SlidersHorizontal,
   Settings,
   Users,
   LogOut,
@@ -60,6 +62,7 @@ interface ModernSeniorHomeProps {
 }
 
 export type ColorTheme = 'emerald' | 'sapphire' | 'zen';
+export type LayoutStyle = 'therapeutic' | 'compact';
 
 export default function ModernSeniorHome({
   topicsWithCounts,
@@ -93,7 +96,9 @@ export default function ModernSeniorHome({
   const [showNameModal, setShowNameModal] = useState(false);
   const [nameInput, setNameInput] = useState('');
 
-  // 2. Giao diện V2 Tinh Gọn (Theo bản thiết kế duyệt flawless_full_home)
+  // 2. Giao diện V2 Tinh Gọn & Mẫu Trị Liệu Dưỡng Sinh
+  const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>('therapeutic');
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [fontScale, setFontScale] = useState<'normal' | 'large' | 'xlarge'>('large');
   const [activeTheme, setActiveTheme] = useState<ColorTheme>('emerald');
   const [searchQuery, setSearchQuery] = useState('');
@@ -198,13 +203,51 @@ export default function ModernSeniorHome({
       if (savedTheme && ['emerald', 'sapphire', 'zen'].includes(savedTheme)) {
         setActiveTheme(savedTheme);
       }
+      const savedLayout = localStorage.getItem('v2_home_layout_style') as LayoutStyle;
+      if (savedLayout && ['compact', 'therapeutic'].includes(savedLayout)) {
+        setLayoutStyle(savedLayout);
+      }
     } catch {}
 
     return () => {
       window.removeEventListener(LEARNING_PROGRESS_EVENT, handleUpdate);
       window.removeEventListener('learning_progress_changed', handleUpdate);
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
     };
   }, []);
+
+  const handleSelectLayoutStyle = (style: LayoutStyle) => {
+    setLayoutStyle(style);
+    try {
+      localStorage.setItem('v2_home_layout_style', style);
+    } catch {}
+  };
+
+  const handlePlaySuggestionAudio = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (typeof window === 'undefined') return;
+    const win = window as any;
+    if (!('speechSynthesis' in win)) {
+      window.location.href = '/cot-song';
+      return;
+    }
+    if (isPlayingAudio) {
+      win.speechSynthesis.cancel();
+      setIsPlayingAudio(false);
+      return;
+    }
+    win.speechSynthesis.cancel();
+    const text = 'Chào bạn! Chào mừng bạn đến với bài học Dưỡng Khớp và Cột Sống. Cột sống nâng đỡ toàn bộ thân mình và bảo vệ tủy sống. Hãy cùng lắng nghe và chăm sóc đúng cách mỗi ngày nhé!';
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'vi-VN';
+    utterance.rate = 0.95;
+    utterance.onstart = () => setIsPlayingAudio(true);
+    utterance.onend = () => setIsPlayingAudio(false);
+    utterance.onerror = () => setIsPlayingAudio(false);
+    win.speechSynthesis.speak(utterance);
+  };
 
   const toggleTheme = () => {
     const nextDark = !isDark;
@@ -347,6 +390,70 @@ export default function ModernSeniorHome({
     return coverUrl || '/images/topics/co-the-nguoi.png';
   };
 
+  const getTherapeuticTopicConfig = (slug: string, title: string) => {
+    if (slug.includes('cot-song')) {
+      return {
+        displayTitle: 'Hệ xương khớp',
+        bgCircle: 'bg-[#E0F2F1] dark:bg-teal-950/70 text-teal-700',
+        iconUrl: '/images/topics_transparent/cot-song.png',
+      };
+    }
+    if (slug.includes('tieu-hoa')) {
+      return {
+        displayTitle: 'Tiêu hóa',
+        bgCircle: 'bg-[#FFF3E0] dark:bg-amber-950/70 text-amber-700',
+        iconUrl: '/images/topics_transparent/tieu-hoa.png',
+      };
+    }
+    if (slug.includes('co-the-nguoi')) {
+      return {
+        displayTitle: 'Tim mạch',
+        bgCircle: 'bg-[#FFEBEE] dark:bg-rose-950/70 text-rose-700',
+        iconUrl: '/images/topics_transparent/co-the-nguoi.png',
+      };
+    }
+    if (slug.includes('mien-dich')) {
+      return {
+        displayTitle: 'Giấc ngủ',
+        bgCircle: 'bg-[#E0F2F1] dark:bg-cyan-950/70 text-teal-800',
+        iconUrl: '/images/topics_transparent/mien-dich.png',
+      };
+    }
+    if (slug.includes('dinh-duong')) {
+      return {
+        displayTitle: 'Dinh dưỡng',
+        bgCircle: 'bg-[#FEF9C3] dark:bg-yellow-950/70 text-yellow-800',
+        iconUrl: '/images/topics_transparent/dinh-duong.png',
+      };
+    }
+    if (slug.includes('nuoc')) {
+      return {
+        displayTitle: 'Nước & Điện giải',
+        bgCircle: 'bg-[#E0F7FA] dark:bg-cyan-950/70 text-cyan-800',
+        iconUrl: '/images/topics_transparent/nuoc.png',
+      };
+    }
+    if (slug.includes('gan-mat-tuy')) {
+      return {
+        displayTitle: 'Gan – Mật – Tụy',
+        bgCircle: 'bg-[#FFF8E1] dark:bg-amber-950/70 text-amber-800',
+        iconUrl: '/images/topics_transparent/gan-mat-tuy.png',
+      };
+    }
+    if (slug.includes('noi-tiet')) {
+      return {
+        displayTitle: 'Nội tiết',
+        bgCircle: 'bg-[#F3E8FF] dark:bg-purple-950/70 text-purple-800',
+        iconUrl: '/images/topics_transparent/noi-tiet-chuyen-hoa.png',
+      };
+    }
+    return {
+      displayTitle: title,
+      bgCircle: 'bg-slate-100 dark:bg-slate-800 text-slate-700',
+      iconUrl: '/images/topics_transparent/cot-song.png',
+    };
+  };
+
   return (
     <div className={`w-full min-h-screen flex flex-col gap-3.5 pb-28 select-none bg-[#FAF9F6] dark:bg-slate-950 text-slate-800 dark:text-slate-100 ${scaleClass}`}>
       
@@ -485,6 +592,35 @@ export default function ModernSeniorHome({
                     </div>
                   </div>
 
+                  {/* Mẫu hiển thị (Giao diện) */}
+                  <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex flex-col gap-1.5">
+                    <span className="text-[11px] font-extrabold uppercase text-slate-400">Mẫu hiển thị</span>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => handleSelectLayoutStyle('therapeutic')}
+                        className={`py-1.5 px-2 rounded-xl text-[11px] font-bold text-center transition-all ${
+                          layoutStyle === 'therapeutic'
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        🌿 Mẫu Trị Liệu
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSelectLayoutStyle('compact')}
+                        className={`py-1.5 px-2 rounded-xl text-[11px] font-bold text-center transition-all ${
+                          layoutStyle === 'compact'
+                            ? 'bg-teal-600 text-white shadow-xs'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        📱 Mẫu Tinh Gọn
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => {
@@ -570,39 +706,49 @@ export default function ModernSeniorHome({
               )}
             </div>
 
-            <div className="flex flex-col min-w-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setNameInput(userName === 'bạn' ? '' : userName);
-                  setShowNameModal(true);
-                }}
-                className="flex items-center gap-1 text-left cursor-pointer group"
-                title="Bấm để đổi tên của bạn"
-              >
-                <span className="text-[16px] sm:text-[17px] font-black text-slate-900 dark:text-white tracking-tight truncate group-hover:text-teal-600 transition-colors">
-                  Hi, {userName || 'bạn'}! 👋
-                </span>
-                <span
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowPhoneSync(true);
+            {layoutStyle === 'therapeutic' ? (
+              /* Lời chào Mẫu Trị Liệu Dưỡng Sinh theo ảnh chuẩn */
+              <div className="flex flex-col min-w-0">
+                <h1 className="text-[18px] sm:text-[20px] font-black text-slate-900 dark:text-white leading-[1.25] tracking-tight">
+                  Xin chào, hôm nay<br />bạn thấy thế nào?
+                </h1>
+              </div>
+            ) : (
+              /* Lời chào Mẫu Tinh Gọn */
+              <div className="flex flex-col min-w-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNameInput(userName === 'bạn' ? '' : userName);
+                    setShowNameModal(true);
                   }}
-                  className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-600 relative hover:scale-105 transition-transform shrink-0"
-                  title="Đồng bộ tiến độ học tập qua SĐT"
+                  className="flex items-center gap-1 text-left cursor-pointer group"
+                  title="Bấm để đổi tên của bạn"
                 >
-                  <Bell size={11} fill="currentColor" />
-                  <span className="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-red-500" />
+                  <span className="text-[16px] sm:text-[17px] font-black text-slate-900 dark:text-white tracking-tight truncate group-hover:text-teal-600 transition-colors">
+                    Hi, {userName || 'bạn'}! 👋
+                  </span>
+                  <span
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowPhoneSync(true);
+                    }}
+                    className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center text-amber-600 relative hover:scale-105 transition-transform shrink-0"
+                    title="Đồng bộ tiến độ học tập qua SĐT"
+                  >
+                    <Bell size={11} fill="currentColor" />
+                    <span className="absolute top-0.5 right-0.5 w-1 h-1 rounded-full bg-red-500" />
+                  </span>
+                </button>
+                <span className="text-[11.5px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                  Chúc bạn ngày mới an lành!
                 </span>
-              </button>
-              <span className="text-[11.5px] text-slate-500 dark:text-slate-400 font-medium truncate">
-                Chúc bạn ngày mới an lành!
-              </span>
-            </div>
+              </div>
+            )}
           </div>
 
-          {/* Cụm Phải: Bộ chỉnh cỡ chữ [A- A+] + Nút Sáng/Tối */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          {/* Cụm Phải: Bộ chỉnh cỡ chữ [A- A+] + Nút Sáng/Tối + Nút chuyển mẫu */}
+          <div className="flex items-center gap-1.5 shrink-0 self-start mt-0.5">
             {/* Bộ chỉnh cỡ chữ [A- A+] */}
             <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-xl border border-slate-200/80 dark:border-slate-700">
               <button
@@ -635,49 +781,97 @@ export default function ModernSeniorHome({
             <button
               type="button"
               onClick={toggleTheme}
-              className="w-8.5 h-8.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-amber-500 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
+              className="w-8 h-8 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-amber-500 transition-colors shadow-2xs cursor-pointer hover:bg-slate-50"
               title={isDark ? "Chuyển sang nền sáng" : "Chuyển sang nền tối"}
               aria-label="Chuyển chế độ Sáng / Tối"
             >
               {isDark ? <Sun size={15} strokeWidth={2.4} /> : <Moon size={15} strokeWidth={2.4} />}
             </button>
+
+            {/* Nút chuyển đổi nhanh giữa 2 Mẫu giao diện */}
+            <button
+              type="button"
+              onClick={() => handleSelectLayoutStyle(layoutStyle === 'therapeutic' ? 'compact' : 'therapeutic')}
+              className="w-8 h-8 rounded-xl bg-teal-50 dark:bg-slate-800 border border-teal-200/80 dark:border-slate-700 flex items-center justify-center text-teal-700 dark:text-teal-400 transition-colors shadow-2xs cursor-pointer hover:bg-teal-100"
+              title={layoutStyle === 'therapeutic' ? "Đang là Mẫu Trị Liệu - Bấm đổi sang Mẫu Tinh Gọn" : "Đang là Mẫu Tinh Gọn - Bấm đổi sang Mẫu Trị Liệu"}
+              aria-label="Đổi mẫu giao diện"
+            >
+              <SlidersHorizontal size={14} />
+            </button>
           </div>
         </div>
 
-        {/* Thanh tìm kiếm hình viên thuốc trắng với Micro xanh ở góc phải */}
-        <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs focus-within:border-teal-500 transition-colors p-1">
-          <Search size={16} className="ml-3 text-slate-400 shrink-0" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && searchQuery.trim()) {
-                window.location.href = `/tim-kiem?q=${encodeURIComponent(searchQuery.trim())}`;
-              }
-            }}
-            placeholder={
-              isListening
-                ? 'Đang lắng nghe... Mời bạn nói...'
-                : 'Tìm kiếm bài học, chuyên đề, giải phẫu...'
-            }
-            className="w-full pl-2.5 pr-10 py-1.5 bg-transparent text-slate-800 dark:text-white placeholder:text-slate-400 font-medium text-sm focus:outline-none"
-          />
+        {/* Thanh tìm kiếm theo từng Mẫu */}
+        {layoutStyle === 'therapeutic' ? (
+          /* Thanh tìm kiếm Mẫu Trị Liệu: Viên thuốc mềm, nút Mic tròn xanh bên TRÁI */
+          <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-full border border-slate-200/80 dark:border-slate-800 shadow-[0_4px_20px_rgba(0,0,0,0.04)] focus-within:border-teal-500 transition-all p-1.5">
+            <button
+              type="button"
+              onClick={handleVoiceSearch}
+              className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-all cursor-pointer ${
+                isListening
+                  ? 'bg-rose-500 text-white animate-pulse'
+                  : 'bg-[#00897B] hover:bg-[#00796B] text-white shadow-xs'
+              }`}
+              title="Bấm để nói tìm kiếm"
+              aria-label="Nói để tìm kiếm"
+            >
+              {isListening ? <MicOff size={16} /> : <Mic size={16} />}
+            </button>
 
-          <button
-            type="button"
-            onClick={handleVoiceSearch}
-            className={`absolute right-1.5 w-7.5 h-7.5 rounded-xl flex items-center justify-center transition-all ${
-              isListening
-                ? 'bg-rose-500 text-white animate-pulse'
-                : 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-slate-700 cursor-pointer'
-            }`}
-            title="Bấm để nói tìm kiếm"
-            aria-label="Nói để tìm kiếm"
-          >
-            {isListening ? <MicOff size={14} /> : <Mic size={14} />}
-          </button>
-        </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  window.location.href = `/tim-kiem?q=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}
+              placeholder={
+                isListening
+                  ? 'Đang lắng nghe... Mời bạn nói...'
+                  : 'Nói hoặc gõ tên bệnh, bài học...'
+              }
+              className="w-full pl-3 pr-4 py-1.5 bg-transparent text-slate-800 dark:text-white placeholder:text-slate-400 font-medium text-sm focus:outline-none"
+            />
+          </div>
+        ) : (
+          /* Thanh tìm kiếm Mẫu Tinh Gọn: Kính lúp bên trái, Mic bên phải */
+          <div className="relative flex items-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 shadow-2xs focus-within:border-teal-500 transition-colors p-1">
+            <Search size={16} className="ml-3 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  window.location.href = `/tim-kiem?q=${encodeURIComponent(searchQuery.trim())}`;
+                }
+              }}
+              placeholder={
+                isListening
+                  ? 'Đang lắng nghe... Mời bạn nói...'
+                  : 'Tìm kiếm bài học, chuyên đề, giải phẫu...'
+              }
+              className="w-full pl-2.5 pr-10 py-1.5 bg-transparent text-slate-800 dark:text-white placeholder:text-slate-400 font-medium text-sm focus:outline-none"
+            />
+
+            <button
+              type="button"
+              onClick={handleVoiceSearch}
+              className={`absolute right-1.5 w-7.5 h-7.5 rounded-xl flex items-center justify-center transition-all ${
+                isListening
+                  ? 'bg-rose-500 text-white animate-pulse'
+                  : 'bg-teal-50 dark:bg-slate-800 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-slate-700 cursor-pointer'
+              }`}
+              title="Bấm để nói tìm kiếm"
+              aria-label="Nói để tìm kiếm"
+            >
+              {isListening ? <MicOff size={14} /> : <Mic size={14} />}
+            </button>
+          </div>
+        )}
       </header>
 
       {showMenu && (
@@ -686,62 +880,151 @@ export default function ModernSeniorHome({
 
       <main className="px-4 sm:px-5 flex flex-col gap-3">
 
-        {/* 5. CHUYÊN ĐỀ HỌC (LƯỚI 2 CỘT CÓ SỐ THỨ TỰ 1, 2, 3, 4 VÀ ẢNH 3D TƯƠI SÁNG) */}
-        <section className="flex flex-col gap-2">
-          <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white px-1">
-            Chuyên Đề Học
-          </h2>
+        {/* NỘI DUNG HIỂN THỊ THEO MẪU ĐƯỢC CHỌN */}
+        {layoutStyle === 'therapeutic' ? (
+          <>
+            {/* 1. THẺ GỢI Ý HÔM NAY: DƯỠNG KHỚP & CỘT SỐNG (CHẤT LƯỢNG MẪU ẢNH THỰC TẾ) */}
+            <section className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#E6F4F1] via-[#EBF7F5] to-[#DDF0EC] dark:from-slate-900 dark:via-teal-950/40 dark:to-slate-900 border border-teal-200/70 dark:border-teal-800/40 p-4.5 sm:p-5 shadow-xs">
+              {/* Vạt cong màu đào ấm áp nhô ra từ mép phải đúng chuẩn ảnh mẫu */}
+              <div className="absolute -right-5 top-1/2 -translate-y-1/2 w-8 h-28 rounded-l-full bg-[#FED7AA]/70 dark:bg-amber-900/30 blur-[0.5px] pointer-events-none" />
 
-          <div className="grid grid-cols-2 gap-2.5">
-            {topicsWithCounts
-              .filter((item) => {
-                const titleLower = item.topic.title.toLowerCase();
-                const slugLower = item.topic.slug.toLowerCase();
-                return (
-                  !titleLower.includes('tùng') &&
-                  !titleLower.includes('chuyên gia') &&
-                  !slugLower.includes('tung') &&
-                  !slugLower.includes('chuyen-gia')
-                );
-              })
-              .map((item, idx) => {
-                const topic = item.topic;
-                const imgUrl = getTopicImage(topic.slug, topic.cover_url);
-                const orderNum = idx + 1;
-
-                return (
-                  <Link
-                    key={topic.id || topic.slug}
-                    href={`/${topic.slug}`}
-                    className="group relative flex items-center justify-between p-2.5 sm:p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-teal-400 shadow-2xs hover:shadow-sm transition-all min-h-[90px] overflow-hidden"
-                >
-                  {/* Số thứ tự 1, 2, 3, 4 ở góc trên trái */}
-                  <span className={`absolute top-2 left-2 w-5 h-5 rounded-md ${themeClasses.cardBadge} text-[11px] font-black flex items-center justify-center shadow-xs`}>
-                    {orderNum}
+              <div className="flex items-center justify-between gap-2 relative z-10">
+                <div className="flex flex-col gap-1.5 max-w-[62%]">
+                  <span className="text-[12.5px] font-semibold text-teal-800 dark:text-teal-300">
+                    Bài học gợi ý hôm nay:
                   </span>
-
-                  {/* Tiêu đề Chuyên đề */}
-                  <div className="flex-1 pr-1.5 pt-5">
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-teal-700 transition-colors leading-tight line-clamp-2">
-                      {topic.title}
-                    </h3>
+                  <Link href="/cot-song" className="group">
+                    <h2 className="text-[20px] sm:text-[22px] font-black text-slate-900 dark:text-white leading-tight group-hover:text-teal-700 transition-colors">
+                      Dưỡng Khớp<br />& Cột Sống
+                    </h2>
+                  </Link>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={handlePlaySuggestionAudio}
+                      className={`px-3.5 py-1.5 rounded-full text-white flex items-center gap-1.5 text-[12px] font-bold shadow-xs cursor-pointer active:scale-95 transition-all ${
+                        isPlayingAudio ? 'bg-rose-600 animate-pulse' : 'bg-[#00897B] hover:bg-[#00796B]'
+                      }`}
+                      title="Bấm để nghe đọc bài học mẫu"
+                    >
+                      <Volume2 size={15} />
+                      <span>{isPlayingAudio ? 'Dừng đọc' : 'Ấn để nghe đọc'}</span>
+                    </button>
                   </div>
+                </div>
 
-                  {/* Ảnh giải phẫu 3D tươi sáng, trong suốt bên phải */}
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 flex items-center justify-center">
-                    <img
-                      src={imgUrl}
-                      alt={topic.title}
-                      className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
+                {/* Ảnh giải phẫu 3D Cột sống & Khớp */}
+                <Link href="/cot-song" className="w-28 sm:w-32 h-28 sm:h-32 shrink-0 flex items-center justify-center relative group">
+                  <img
+                    src="/images/topics_transparent/cot-song.png"
+                    alt="Dưỡng Khớp & Cột Sống"
+                    className="w-full h-full object-contain drop-shadow-md group-hover:scale-105 transition-transform"
+                  />
                 </Link>
-              );
-            })}
-          </div>
-        </section>
+              </div>
 
+              {/* Chấm phân trang [ — • • ] */}
+              <div className="flex items-center justify-center gap-1.5 pt-3">
+                <span className="w-5 h-1.5 rounded-full bg-[#00897B]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
+              </div>
+            </section>
+
+            {/* 2. LƯỚI CHUYÊN ĐỀ 2 CỘT (THẺ BO TRÒN MỀM MẠI, VÒNG TRÒN PASTEL Ở GIỮA) */}
+            <section className="grid grid-cols-2 gap-3 sm:gap-3.5">
+              {topicsWithCounts
+                .filter((item) => {
+                  const titleLower = item.topic.title.toLowerCase();
+                  const slugLower = item.topic.slug.toLowerCase();
+                  return (
+                    !titleLower.includes('tùng') &&
+                    !titleLower.includes('chuyên gia') &&
+                    !slugLower.includes('tung') &&
+                    !slugLower.includes('chuyen-gia')
+                  );
+                })
+                .map((item) => {
+                  const topic = item.topic;
+                  const conf = getTherapeuticTopicConfig(topic.slug, topic.title);
+
+                  return (
+                    <Link
+                      key={topic.id || topic.slug}
+                      href={`/${topic.slug}`}
+                      className="flex flex-col items-center justify-center gap-3 p-4 sm:p-5 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-100/90 dark:border-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:-translate-y-0.5 transition-all text-center group cursor-pointer aspect-[1.12/1]"
+                    >
+                      <div className={`w-15 h-15 sm:w-16 sm:h-16 rounded-full flex items-center justify-center p-2.5 ${conf.bgCircle} shadow-2xs group-hover:scale-110 transition-transform`}>
+                        <img
+                          src={conf.iconUrl}
+                          alt={conf.displayTitle}
+                          className="max-h-full max-w-full object-contain drop-shadow-xs"
+                          loading="lazy"
+                        />
+                      </div>
+
+                      <span className="text-[14px] sm:text-[15px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors leading-tight">
+                        {conf.displayTitle}
+                      </span>
+                    </Link>
+                  );
+                })}
+            </section>
+          </>
+        ) : (
+          /* MẪU TINH GỌN (APPLE HEALTH - SỐ THỨ TỰ 1 ĐẾN 8) */
+          <section className="flex flex-col gap-2">
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white px-1">
+              Chuyên Đề Học
+            </h2>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              {topicsWithCounts
+                .filter((item) => {
+                  const titleLower = item.topic.title.toLowerCase();
+                  const slugLower = item.topic.slug.toLowerCase();
+                  return (
+                    !titleLower.includes('tùng') &&
+                    !titleLower.includes('chuyên gia') &&
+                    !slugLower.includes('tung') &&
+                    !slugLower.includes('chuyen-gia')
+                  );
+                })
+                .map((item, idx) => {
+                  const topic = item.topic;
+                  const imgUrl = getTopicImage(topic.slug, topic.cover_url);
+                  const orderNum = idx + 1;
+
+                  return (
+                    <Link
+                      key={topic.id || topic.slug}
+                      href={`/${topic.slug}`}
+                      className="group relative flex items-center justify-between p-2.5 sm:p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/90 dark:border-slate-800 hover:border-teal-400 shadow-2xs hover:shadow-sm transition-all min-h-[90px] overflow-hidden"
+                    >
+                      <span className={`absolute top-2 left-2 w-5 h-5 rounded-md ${themeClasses.cardBadge} text-[11px] font-black flex items-center justify-center shadow-xs`}>
+                        {orderNum}
+                      </span>
+
+                      <div className="flex-1 pr-1.5 pt-5">
+                        <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-teal-700 transition-colors leading-tight line-clamp-2">
+                          {topic.title}
+                        </h3>
+                      </div>
+
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 shrink-0 flex items-center justify-center">
+                        <img
+                          src={imgUrl}
+                          alt={topic.title}
+                          className="max-h-full max-w-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      </div>
+                    </Link>
+                  );
+                })}
+            </div>
+          </section>
+        )}
         {/* 6. HỒ SƠ CHUYÊN GIA (TÁC GIẢ TÙNG DINH DƯỠNG & TRIẾT LÝ SỨC KHỎE - TUYỆT ĐỐI KHÔNG CHỮ BÁC SĨ) */}
         <section className="flex flex-col gap-2 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 shadow-2xs">
           <div className="flex items-center justify-between">
