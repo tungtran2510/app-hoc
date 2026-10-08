@@ -561,7 +561,7 @@ export function createShared3DView(params: {
   const newView: Shared3DView = {
     id: `view_${Date.now()}`,
     title: params.title.trim() || `Góc nhìn: ${params.partNameVi}`,
-    authorName: params.authorName || 'Bác sĩ / Giảng viên',
+    authorName: params.authorName || 'Chuyên gia / Giảng viên',
     authorRole: params.authorRole || 'Giảng viên',
     createdAt: new Date().toISOString(),
     partId: params.partId,

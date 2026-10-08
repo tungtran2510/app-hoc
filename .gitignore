@@ -5,17 +5,19 @@ node_modules
 .env*.local
 .vercel
 
-# Temporary scratch and QA test files
+# Temporary scratch, demo previews, and QA test files
 scratch/
 test_*.py
 test_*.mjs
 test_*.png
 verify_*.mjs
+public/mobile_*.png
+public/demo-ui/
+public/xem-anh-demo.html
+scripts/uploaded_urls.json
 *.tsbuildinfo
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
-
-.vercel

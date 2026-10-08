@@ -601,7 +601,7 @@ export default function HomeHeader({
                 type="text"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
-                placeholder="Ví dụ: Hoàng, Bác sĩ Minh, Thảo..."
+                placeholder="Ví dụ: Hoàng, Minh, Thảo..."
                 className="w-full h-11 px-3.5 rounded-[12px] bg-slate-50 dark:bg-[#120924] border border-slate-200 dark:border-[#3A2268] text-slate-900 dark:text-white text-[14px] font-semibold focus:outline-none focus:ring-2 focus:ring-[#1E3A8A] dark:focus:ring-amber-400"
                 autoFocus
                 onKeyDown={(e) => {

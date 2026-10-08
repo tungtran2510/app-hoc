@@ -288,7 +288,7 @@ export default function QbizBooksOpeningSplash({
                 className="text-[10px] font-black uppercase tracking-widest mt-2"
                 style={{ color: '#64748B' }}
               >
-                — DR. TÙNG DINH DƯỠNG —
+                — TÁC GIẢ TÙNG DINH DƯỠNG —
               </span>
             </div>
 
@@ -390,7 +390,7 @@ export default function QbizBooksOpeningSplash({
               {/* Phần đáy bìa */}
               <div className="flex flex-col items-center text-center mb-2 relative z-10">
                 <span className="text-[8.5px] font-black tracking-[0.2em] text-amber-300/70 uppercase">
-                  TÁC GIẢ: DR. TÙNG DINH DƯỠNG
+                  TÁC GIẢ: TÙNG DINH DƯỠNG
                 </span>
                 <span className="text-[7.5px] text-slate-400/60 mt-0.5">
                   CHẠM ĐỂ MỞ SÁCH • TOUCH TO OPEN
@@ -420,7 +420,7 @@ export default function QbizBooksOpeningSplash({
               </p>
               <div className="mt-3 flex items-center gap-1 text-[9px] text-amber-300/60 uppercase tracking-widest">
                 <span>✦</span>
-                <span>DR. TÙNG</span>
+                <span>TÙNG DINH DƯỠNG</span>
                 <span>✦</span>
               </div>
             </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ChevronRight, BookOpen } from 'lucide-react';
+import { ChevronRight, BookOpen, Clock, CheckCircle2 } from 'lucide-react';
 import { Page, Topic } from '../lib/types';
 
 interface PageCardProps {
@@ -26,25 +26,24 @@ export default function PageCard({
   isActive = false,
   onActivate,
 }: PageCardProps) {
-  const formattedOrder = String(orderNumber).padStart(2, '0');
-
   const count = typeof videoCount === 'number' ? videoCount : 0;
   const watchedCount = watchedVideos.length;
   const isAllWatched = count > 0 && watchedCount >= count;
   const hasStarted = isCompleted || watchedCount > 0 || (lastVideo !== undefined && lastVideo > 0);
 
-  let subtitle = count > 0 ? `${count} video · Chưa xem` : `Bài học · Chưa xem`;
+  const durationMin = Math.max(5, count * 5);
+  let subtitle = `${count > 0 ? `${count} video` : 'Bài học'} • ⏱ ~${durationMin} phút`;
   let progressPercent = 0;
 
   if (isCompleted || isAllWatched) {
-    subtitle = `Đã hiểu bài học ✓`;
+    subtitle = `Đã hoàn thành bài ✓`;
     progressPercent = 100;
   } else if (count === 0) {
-    subtitle = hasStarted ? `Đang học bài` : `Bài học lý thuyết`;
+    subtitle = hasStarted ? `Đang học bài` : `Lý thuyết • ⏱ 5 phút`;
     progressPercent = hasStarted ? 50 : 0;
   } else if (hasStarted) {
     const currentVideo = lastVideo || (watchedVideos.length > 0 ? Math.max(...watchedVideos) : 1);
-    subtitle = `${count} video · Đang ở video ${String(currentVideo).padStart(2, '0')}`;
+    subtitle = `Đang học video ${String(currentVideo).padStart(2, '0')}/${count}`;
     progressPercent = Math.min(100, Math.round((watchedCount / count) * 100));
     if (progressPercent === 0 && currentVideo > 0) {
       progressPercent = Math.round((1 / count) * 100);
@@ -60,66 +59,78 @@ export default function PageCard({
       href={targetUrl}
       prefetch={true}
       onTouchStart={onActivate}
-      className={`page-card-container flex items-center gap-2.5 sm:gap-3 p-2.5 sm:p-3 bg-white dark:bg-gradient-to-br dark:from-[#1C123D] dark:via-[#160D30] dark:to-[#0E0720] rounded-[14px] border transition-all active:scale-[0.99] shadow-xs group ${
+      className={`page-card-container flex items-center gap-3 p-3 bg-white dark:bg-slate-900 rounded-2xl border transition-all active:scale-[0.99] shadow-xs group ${
         isActive
-          ? 'is-active border-blue-400 dark:border-[#93C5FD]'
+          ? 'border-teal-500 ring-2 ring-teal-500/20 shadow-sm'
           : hasStarted && !isCompleted
-          ? 'border-blue-300 dark:border-blue-400/50'
+          ? 'border-teal-300 dark:border-teal-700/60'
           : isCompleted
-          ? 'border-emerald-300/80 dark:border-emerald-500/30'
-          : 'border-slate-200/80 dark:border-purple-500/25'
+          ? 'border-emerald-300 dark:border-emerald-700/50 bg-emerald-50/20'
+          : 'border-slate-100 dark:border-slate-800 hover:border-teal-200 dark:hover:border-teal-800'
       }`}
     >
-      {/* Ô ẢNH ĐẠI DIỆN BÀI HỌC (AVATAR / THUMBNAIL) */}
-      <div className="relative w-[60px] h-[60px] sm:w-[68px] sm:h-[68px] rounded-[12px] overflow-hidden bg-slate-100 dark:bg-[#0A0515] border border-slate-200 dark:border-purple-500/30 shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-200">
+      {/* Ô ẢNH ĐẠI DIỆN BÀI HỌC (THUMBNAIL) */}
+      <div className="relative w-16 h-16 sm:w-18 sm:h-18 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-200">
         {page.cover_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={page.cover_url}
             alt={page.title}
             className="w-full h-full object-cover"
+            loading="lazy"
           />
         ) : (
-          <div
-            className="w-full h-full flex flex-col items-center justify-center bg-blue-50 dark:bg-purple-950/60 text-blue-800 dark:text-purple-200"
-          >
+          <div className="w-full h-full flex flex-col items-center justify-center bg-teal-50 dark:bg-teal-950/60 text-teal-700 dark:text-teal-300">
             <BookOpen size={24} className="opacity-80" />
           </div>
         )}
       </div>
 
-      {/* NỘI DUNG BÊN PHẢI: TIÊU ĐỀ RỘNG RÃI TRẢI DÀI + TRẠNG THÁI TIẾN ĐỘ */}
+      {/* NỘI DUNG BÊN PHẢI: TIÊU ĐỀ RỘNG RÃI + THỜI LƯỢNG & TRẠNG THÁI */}
       <div className="flex-1 flex flex-col justify-between min-w-0 py-0.5 self-stretch">
-        {/* HÀNG TRÊN: TIÊU ĐỀ TRẢI RỘNG TOÀN DIỆN KHÔNG BỊ CHÈN ÉP BỞI CHỮ BẮT ĐẦU */}
         <div className="flex items-center justify-between gap-1.5">
-          <h3 className={`text-[14.5px] sm:text-[15.5px] font-bold leading-snug line-clamp-2 transition-colors flex-1 min-w-0 ${
-            isActive ? 'text-blue-700 dark:text-[#93C5FD]' : 'text-slate-900 dark:text-white group-hover:text-blue-700 dark:group-hover:text-blue-200'
-          }`}>
-            {page.title}
+          <h3
+            className={`text-sm sm:text-base font-bold leading-snug line-clamp-2 transition-colors flex-1 min-w-0 ${
+              isActive
+                ? 'text-teal-800 dark:text-teal-300'
+                : 'text-slate-900 dark:text-white group-hover:text-teal-700 dark:group-hover:text-teal-400'
+            }`}
+          >
+            <span className="text-teal-700 dark:text-teal-400 font-mono font-extrabold mr-1.5 shrink-0">
+              {String(orderNumber).padStart(2, '0')} ·
+            </span>
+            <span>{page.title}</span>
           </h3>
-          <ChevronRight size={16} strokeWidth={2.5} className={`transition-colors shrink-0 ml-1 ${
-            isActive ? 'text-blue-700 dark:text-[#93C5FD] translate-x-0.5' : 'text-slate-400 group-hover:text-blue-700 dark:group-hover:text-white'
-          }`} />
+          <ChevronRight
+            size={18}
+            className={`transition-colors shrink-0 ml-1 ${
+              isActive
+                ? 'text-teal-600 dark:text-teal-400 translate-x-0.5'
+                : 'text-slate-400 group-hover:text-teal-600 dark:group-hover:text-white'
+            }`}
+          />
         </div>
 
-        {/* HÀNG DƯỚI: BADGE TRẠNG THÁI (BẮT ĐẦU / ĐANG HỌC / ĐÃ XONG) + PHỤ ĐỀ / TIẾN ĐỘ */}
-        <div className="flex items-center justify-between gap-2 mt-1.5 pt-0.5">
-          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+        {/* HÀNG DƯỚI: TRẠNG THÁI HOÀN THÀNH / ĐANG HỌC HOẶC THỜI LƯỢNG */}
+        <div className="flex items-center justify-between gap-2 mt-1 pt-0.5">
+          <div className="flex items-center gap-2 min-w-0">
             {isCompleted ? (
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/80 dark:border-emerald-500/30 dark:text-emerald-300 text-[10px] sm:text-[10.5px] font-black tracking-wide shrink-0">
-                ĐÃ XONG
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 dark:bg-emerald-950/80 dark:border-emerald-600/40 dark:text-emerald-300 text-[11px] font-bold shrink-0">
+                <CheckCircle2 size={12} />
+                <span>Hoàn thành</span>
               </span>
             ) : hasStarted ? (
-              <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-950 border border-blue-300 dark:bg-[#93C5FD] dark:text-[#160C2C] dark:border-transparent text-[10px] sm:text-[10.5px] font-black tracking-wide shrink-0">
-                ĐANG HỌC
+              <span className="px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 border border-teal-300 dark:bg-teal-950/80 dark:border-teal-600/40 dark:text-teal-200 text-[11px] font-bold shrink-0">
+                Đang học
               </span>
-            ) : orderNumber === 1 ? (
-              <span className="px-2 py-0.5 rounded-full bg-blue-50 text-blue-900 border border-blue-300 dark:bg-purple-900/60 dark:text-[#93C5FD] text-[10px] sm:text-[10.5px] font-black shrink-0">
-                BẮT ĐẦU
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 text-[11px] font-semibold shrink-0">
+                <Clock size={11} />
+                <span>~{durationMin} phút</span>
               </span>
-            ) : null}
+            )}
 
-            <p className="text-[12px] sm:text-[12.5px] text-slate-500 dark:text-purple-300/70 font-medium truncate">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium truncate">
               {subtitle}
             </p>
           </div>
@@ -127,16 +138,15 @@ export default function PageCard({
           {/* Thanh tiến độ nếu đang học */}
           {hasStarted && (
             <div
-              className="w-16 sm:w-20 h-1.5 bg-slate-200 dark:bg-purple-950/80 border border-slate-300/60 dark:border-purple-900/30 rounded-full overflow-hidden shrink-0"
+              className="w-16 sm:w-20 h-1.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full overflow-hidden shrink-0"
               role="progressbar"
               aria-valuenow={progressPercent}
               aria-valuemin={0}
               aria-valuemax={100}
-              aria-label="Tiến độ bài học"
             >
               <div
                 className={`h-full rounded-full transition-all duration-300 ${
-                  isAllWatched ? 'bg-emerald-500' : 'bg-blue-600 dark:bg-gradient-to-r dark:from-purple-500 dark:to-[#93C5FD]'
+                  isAllWatched || isCompleted ? 'bg-emerald-500' : 'bg-teal-600'
                 }`}
                 style={{ width: `${progressPercent}%` }}
               />

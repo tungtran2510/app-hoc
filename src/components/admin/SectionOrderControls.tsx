@@ -1,13 +1,15 @@
 'use client';
 
-import React from 'react';
-import { ArrowUp, ArrowDown, Layers, Eye, EyeOff, Edit2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowUp, ArrowDown, Layers, Eye, EyeOff, Edit2, ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 
 interface SectionOrderControlsProps {
   sectionTitle?: string;
   sectionIndex: number;
   totalSections: number;
   isHidden?: boolean;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
   onToggleVisibility?: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
@@ -22,6 +24,8 @@ export default function SectionOrderControls({
   sectionIndex,
   totalSections,
   isHidden = false,
+  isCollapsed = false,
+  onToggleCollapse,
   onToggleVisibility,
   onMoveUp,
   onMoveDown,
@@ -33,7 +37,30 @@ export default function SectionOrderControls({
   const isFirst = sectionIndex <= 0;
   const isLast = sectionIndex >= totalSections - 1;
 
-  // Nếu không truyền sectionTitle, hiển thị dạng pill thu gọn
+  const [isCompact, setIsCompact] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsCompact(localStorage.getItem('admin_compact_section_bars') === 'true');
+      const handler = () => {
+        setIsCompact(localStorage.getItem('admin_compact_section_bars') === 'true');
+      };
+      window.addEventListener('admin_compact_toggle', handler);
+      return () => window.removeEventListener('admin_compact_toggle', handler);
+    }
+  }, []);
+
+  const toggleCompactMode = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const next = !isCompact;
+    setIsCompact(next);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('admin_compact_section_bars', String(next));
+      window.dispatchEvent(new Event('admin_compact_toggle'));
+    }
+  };
+
+  // Nếu không truyền sectionTitle và onEdit, hiển thị dạng pill thu gọn
   if (!sectionTitle && !onEdit) {
     return (
       <div
@@ -109,22 +136,49 @@ export default function SectionOrderControls({
   // DẠNG THANH ĐIỀU KHIỂN CHUYÊN NGHIỆP TRÊN ĐẦU KHỐI (FULL-WIDTH ADMIN BAR)
   return (
     <div
-      className={`w-full flex items-center justify-between py-1 px-2.5 rounded-[12px] bg-slate-900/75 dark:bg-[#1A103C]/95 border border-slate-300/30 dark:border-purple-700/60 shadow-xs backdrop-blur-xs mb-1.5 gap-2 ${className}`}
-      title="Thanh quản trị khối"
+      className={`w-full flex items-center justify-between py-1 px-2 sm:px-2.5 rounded-[12px] bg-slate-900/85 dark:bg-[#1A103C]/95 border border-slate-300/30 dark:border-purple-700/60 shadow-xs backdrop-blur-xs mb-1.5 gap-1.5 sm:gap-2 ${className}`}
+      title={`Thanh quản trị: ${sectionTitle || 'Khối nội dung'}`}
     >
-      {/* Bên trái: Tên khối & Trạng thái */}
-      <div className="flex items-center gap-1.5 min-w-0">
-        <span className="text-[11px] font-black text-slate-200 dark:text-purple-200 uppercase tracking-wider truncate">
+      {/* Bên trái: Tên khối & Nút Thu gọn / Mở rộng (thay thế nút Ẩn trùng lặp) */}
+      <div className="flex items-center gap-1.5 min-w-0 flex-1">
+        <span
+          className="text-[11px] font-black text-slate-200 dark:text-purple-200 uppercase tracking-wider truncate"
+          title={sectionTitle || 'KHỐI NỘI DUNG'}
+        >
           {sectionTitle || 'KHỐI NỘI DUNG'}
         </span>
-        {isHidden && (
-          <span className="text-[9.5px] font-black uppercase px-1.5 py-0.2 rounded bg-amber-500/25 text-amber-300 border border-amber-400/40 shrink-0">
-            Đang ẩn
-          </span>
+
+        {/* Nút Thu gọn / Mở rộng khung: Ấn vào thì gọn toàn bộ khung lại, ấn lại thì mở rộng ra */}
+        {onToggleCollapse && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleCollapse();
+            }}
+            className={`inline-flex items-center gap-1 h-6 px-1.5 rounded-[6px] text-[10.5px] font-black uppercase tracking-wide cursor-pointer transition-transform active:scale-95 shrink-0 ${
+              isCollapsed
+                ? 'bg-purple-600/80 text-amber-300 border border-purple-400/60 shadow-xs'
+                : 'bg-white/10 text-slate-200 dark:text-purple-200 hover:bg-white/20 border border-white/15'
+            }`}
+            title={isCollapsed ? 'Khối đang thu gọn – Bấm để mở rộng toàn bộ khung' : 'Bấm để thu gọn toàn bộ khung này'}
+          >
+            {isCollapsed ? (
+              <>
+                <ChevronDown size={11} strokeWidth={2.8} />
+                <span className={isCompact ? 'hidden' : 'inline'}>Mở rộng</span>
+              </>
+            ) : (
+              <>
+                <ChevronUp size={11} strokeWidth={2.8} />
+                <span className={isCompact ? 'hidden' : 'inline'}>Thu gọn</span>
+              </>
+            )}
+          </button>
         )}
       </div>
 
-      {/* Bên phải: Nút Sửa trực tiếp + Lên, Xuống, Ẩn, Đổi thứ tự */}
+      {/* Bên phải: Nút Sửa trực tiếp + Ẩn/Hiện + Lên, Xuống, Đổi thứ tự + Siêu gọn */}
       <div className="flex items-center gap-1 shrink-0">
         {onEdit && (
           <button
@@ -133,11 +187,18 @@ export default function SectionOrderControls({
               e.stopPropagation();
               onEdit();
             }}
-            className="flex items-center gap-1 h-[28px] px-2.5 rounded-[7px] bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[11px] tracking-wide uppercase transition-transform active:scale-95 shadow-xs cursor-pointer mr-0.5"
+            className={`flex items-center justify-center gap-1 h-7 rounded-[7px] bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[11px] tracking-wide uppercase transition-transform active:scale-95 shadow-xs cursor-pointer ${
+              isCompact ? 'w-7 px-0' : 'px-2 sm:px-2.5'
+            }`}
             title={`${editLabel} (${sectionTitle})`}
           >
             <Edit2 size={11} strokeWidth={3} />
-            <span>{editLabel}</span>
+            {!isCompact && (
+              <>
+                <span className="hidden sm:inline">{editLabel}</span>
+                <span className="sm:hidden">Sửa</span>
+              </>
+            )}
           </button>
         )}
 
@@ -199,6 +260,20 @@ export default function SectionOrderControls({
           title="Mở bảng sắp xếp tất cả các khối"
         >
           <Layers size={13} strokeWidth={2.2} />
+        </button>
+
+        {/* Chuyển đổi Biểu tượng Siêu gọn */}
+        <button
+          type="button"
+          onClick={toggleCompactMode}
+          className={`w-7 h-7 rounded-[7px] flex items-center justify-center transition-all cursor-pointer active:scale-95 ${
+            isCompact
+              ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30'
+              : 'text-slate-400 dark:text-purple-400 hover:text-white hover:bg-white/10'
+          }`}
+          title={isCompact ? 'Đang bật biểu tượng siêu gọn – Bấm để hiện chữ' : 'Bật chế độ biểu tượng siêu gọn (tiết kiệm không gian)'}
+        >
+          <Sparkles size={11} strokeWidth={2.2} />
         </button>
       </div>
     </div>

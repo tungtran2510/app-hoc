@@ -151,15 +151,15 @@ export default function PageListClient({ initialPages, topic }: PageListClientPr
   return (
     <section className="flex flex-col gap-2 mt-1">
       <div className="flex items-center justify-between gap-2">
-        <h2 className="text-[15px] sm:text-[16.5px] font-black text-slate-900 dark:text-white uppercase tracking-tight truncate">
-          LỘ TRÌNH {visiblePages.length} BƯỚC · {visiblePages.length} BÀI HỌC
+        <h2 className="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-200 uppercase tracking-tight truncate">
+          Lộ trình {visiblePages.length} bài học
         </h2>
 
         {isAdmin && (
           <button
             type="button"
             onClick={() => setIsCreating(true)}
-            className="flex items-center gap-1 h-7.5 px-2.5 rounded-full bg-[#1E3A8A] hover:bg-[#172554] text-amber-300 font-bold text-[11.5px] shadow-xs cursor-pointer transition-all shrink-0"
+            className="flex items-center gap-1 h-7.5 px-2.5 rounded-full bg-teal-700 hover:bg-teal-800 text-white font-bold text-xs shadow-2xs cursor-pointer transition-all shrink-0"
           >
             <Plus size={14} strokeWidth={2.5} />
             <span>Thêm bài</span>
@@ -174,9 +174,9 @@ export default function PageListClient({ initialPages, topic }: PageListClientPr
           </p>
 
           <div className="relative flex flex-col gap-2.5 mt-1">
-            {/* Đường kẻ dọc nối liền các bước lộ trình (như Ảnh mẫu 2) */}
+            {/* Đường kẻ dọc nối liền các bước lộ trình */}
             <div
-              className="absolute left-[13.5px] top-5 bottom-5 w-[2px] bg-slate-200/90 dark:bg-purple-800/40 pointer-events-none z-0"
+              className="absolute left-[13px] top-4 bottom-4 w-[2px] bg-teal-100 dark:bg-teal-950 pointer-events-none z-0"
               aria-hidden="true"
             />
 
@@ -185,17 +185,20 @@ export default function PageListClient({ initialPages, topic }: PageListClientPr
               const watchedVideos = pageTienDo?.watched || [];
               const lastVideo = pageTienDo?.last_video;
               const isCompleted = completedPages.includes(page.id);
+              const hasStarted = isCompleted || watchedVideos.length > 0 || (lastVideo !== undefined && lastVideo > 0);
               const formattedOrder = String(orderNumber).padStart(2, '0');
 
               return (
                 <div key={page.id} className="w-full relative group flex flex-col gap-1.5">
                   <div className="w-full flex items-center gap-2 sm:gap-2.5">
-                    {/* Cột mốc tròn số thứ tự trên dòng lộ trình (như Ảnh mẫu 2) */}
+                    {/* Cột mốc tròn số thứ tự nhỏ gọn 28px trên dòng lộ trình */}
                     <div
-                      className={`w-[29px] h-[29px] rounded-full flex items-center justify-center text-[11px] font-black shrink-0 shadow-2xs z-10 font-mono transition-colors ${
+                      className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-black shrink-0 shadow-2xs z-10 font-mono transition-colors ${
                         isCompleted
-                          ? 'bg-emerald-50 text-emerald-700 border-[1.5px] border-emerald-300 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-600/50'
-                          : 'bg-white dark:bg-[#160D30] text-slate-500 dark:text-white/75 border-[1.5px] border-slate-200 dark:border-purple-500/40'
+                          ? 'bg-emerald-600 text-white border-2 border-emerald-400 dark:bg-emerald-700'
+                          : hasStarted
+                          ? 'bg-teal-600 text-white border-2 border-teal-300'
+                          : 'bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border-2 border-slate-200 dark:border-slate-700'
                       }`}
                       title={`Bước ${formattedOrder}`}
                     >

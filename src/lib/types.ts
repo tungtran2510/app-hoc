@@ -35,6 +35,14 @@ export interface AuthorProfile {
   email?: string | null;
   facebook_url?: string | null;
   address?: string | null;
+  featured_variants_hidden?: string[];
+}
+
+export interface TopicsGuide {
+  title?: string;
+  body?: string;
+  images?: string[];
+  youtube_url?: string | null;
 }
 
 export interface RecommendedBook {
@@ -94,6 +102,12 @@ export interface Settings {
   home_title?: string | null;
   search_placeholder?: string | null;
   topics_title?: string | null;
+  topics_description?: string | null;
+  topics_guide?: TopicsGuide | null;
+  topics_display?: 'card' | 'text' | 'logo' | 'large' | null;
+  home_topics_display?: 'card' | 'text' | 'logo' | 'large' | 'catalog' | null;
+  topics_page_display?: 'card' | 'text' | 'logo' | 'large' | 'catalog' | null;
+  featured_topic_ids?: string[] | null;
   recommended_books_title?: string | null;
   recommended_books_subtitle?: string | null;
   recommended_books?: RecommendedBook[];
@@ -161,12 +175,20 @@ export interface Video {
   thumbnail_url?: string;
   is_vertical?: boolean;
   aspect_ratio?: 'horizontal' | 'vertical' | '9:16' | '16:9';
+  audio_url?: string | null;
 }
 
 export interface FileItem {
   url: string;
   name: string;
   size_bytes?: number;
+}
+
+export interface FaqResource {
+  title: string;
+  url: string;
+  kind?: 'video' | 'link';
+  thumbnail_url?: string;
 }
 
 export type Block =
@@ -251,11 +273,42 @@ export type Block =
       is_visible: boolean;
       data: {
         title?: string;
+        description?: string;
+        /** Separates topic-page FAQs from the independent all-topics FAQ collection. */
+        faq_surface?: 'topic' | 'overview';
+        faq_category_id?: string;
+        faq_category_title?: string;
+        scope?: 'topic' | 'video';
+        target_page_id?: string;
+        target_video_index?: number;
         items: Array<{
           id: string;
           question: string;
           answer: string;
+          is_visible?: boolean;
+          image_url?: string;
+          resources?: FaqResource[];
+          learning_answers?: Array<{
+            id: string;
+            text: string;
+            target_topic_id?: string;
+            target_page_id: string;
+            target_video_index: number;
+            video_links?: Array<{ id: string; target_topic_id: string; target_page_id: string; target_video_index: number }>;
+          }>;
         }>;
+      };
+    }
+  | {
+      id: string;
+      page_id: string;
+      type: 'books';
+      display_style: 'list' | 'grid' | 'feature' | string;
+      sort_order: number;
+      is_visible: boolean;
+      data: {
+        title?: string;
+        books: RecommendedBook[];
       };
     };
 
@@ -268,6 +321,20 @@ export interface ContinueInfo {
   video_total: number;
   video_title: string;
   page_order_label: string;
+}
+
+export interface ReviewVideoSyncItem {
+  id: string; // `${page_id}_${video_index}`
+  page_id: string;
+  topic_slug: string;
+  topic_title: string;
+  page_slug: string;
+  page_title: string;
+  video_index: number;
+  video_title: string;
+  cover_url?: string | null;
+  takeaway?: string;
+  marked_at: number;
 }
 
 export interface UserProgressSyncData {
@@ -284,6 +351,12 @@ export interface UserProgressSyncData {
     saved_at: number;
   }>;
   da_hoan_thanh?: string[];
+  can_on_tap_videos?: ReviewVideoSyncItem[];
+  reader_font?: string;
+  display_preferences?: {
+    home_topics_display?: string;
+    topics_page_display?: string;
+  };
   updated_at?: string;
 }
 
@@ -303,4 +376,20 @@ export interface AdminUserSession {
   name: string;
   role: 'super_admin' | 'admin' | 'instructor';
   allowed_topic_ids?: string[];
+  workspace_id?: string;
+}
+
+export interface WorkspaceTenant {
+  id: string; // Mã slug định danh workspace, vd: 'bs-tuan'
+  name: string; // Tên app/phòng khám, vd: 'Cột Sống Khỏe - Bs. Tuấn'
+  owner_name?: string; // Tên người sở hữu
+  owner_phone: string; // Số điện thoại quản trị
+  admin_password?: string; // Mật khẩu quản trị
+  custom_domain?: string | null; // Tên miền riêng nếu có
+  subdomain?: string | null; // Subdomain riêng nếu có
+  is_active: boolean; // Trạng thái hoạt động
+  created_at: string; // Ngày tạo
+  expires_at?: string | null; // Ngày hết hạn dịch vụ
+  copied_template?: boolean; // Đã sao chép khóa học mẫu
+  note?: string; // Ghi chú hợp đồng / thanh toán
 }

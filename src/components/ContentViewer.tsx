@@ -1210,7 +1210,7 @@ export default function ContentViewer({
                 href={`/${topic.slug}/${nextPage.slug}`}
                 prefetch={true}
                 onClick={playTapSound}
-                className="flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-[10px] bg-gradient-to-r from-blue-600 via-blue-700 to-blue-800 text-white font-black shadow-sm shadow-blue-600/20 border border-blue-300/50 hover:brightness-105 transition-all group active:scale-[0.98] h-[36px] overflow-hidden"
+                className="flex items-center justify-center gap-1.5 px-2.5 py-1 rounded-[10px] bg-gradient-to-r from-teal-700 via-teal-800 to-emerald-800 text-white font-black shadow-sm shadow-teal-700/20 border border-teal-500/50 hover:brightness-105 transition-all group active:scale-[0.98] h-[36px] overflow-hidden"
               >
                 <span className="text-[11.5px] sm:text-[12px] font-black text-white truncate">
                   Bài {String(nextPageIndex).padStart(2, '0')}: {nextPage.title}

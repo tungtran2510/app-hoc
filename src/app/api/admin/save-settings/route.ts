@@ -45,11 +45,20 @@ export async function POST(req: NextRequest) {
       flat_books: settings.flat_books !== undefined ? settings.flat_books : (existingBlockStyles.flat_books ?? []),
       home_sections_order: settings.home_sections_order !== undefined ? settings.home_sections_order : (existingBlockStyles.home_sections_order ?? ['brand_card', 'topics', 'recent_activity', 'author_profile', 'author_books', 'author_philosophy', 'recommended_books', 'flat_books', 'author_contact']),
       hidden_home_sections: settings.hidden_home_sections !== undefined ? settings.hidden_home_sections : (existingBlockStyles.hidden_home_sections ?? []),
-      ai_training: settings.ai_training !== undefined ? settings.ai_training : (existingBlockStyles.ai_training ?? null),
+      ai_training: (settings.ai_training && typeof settings.ai_training === 'object' && ('guidelines' in settings.ai_training || 'documents' in settings.ai_training || 'faqs' in settings.ai_training))
+        ? settings.ai_training
+        : (existingBlockStyles.ai_training ?? null),
       welcome_title: settings.welcome_title !== undefined ? settings.welcome_title : (existingBlockStyles.welcome_title ?? 'Chào mừng bạn đến với Qbiz Books'),
       welcome_message: settings.welcome_message !== undefined ? settings.welcome_message : (existingBlockStyles.welcome_message ?? 'Hi vọng nền tảng học hiểu cơ thể và chăm sóc sức khỏe chủ động này sẽ giúp bạn hiểu sâu hơn về cơ thể mình, nuôi dưỡng hệ cơ xương khớp và sống khỏe mỗi ngày.'),
       welcome_video_url: settings.welcome_video_url !== undefined ? settings.welcome_video_url : (existingBlockStyles.welcome_video_url ?? null),
       home_custom_blocks: settings.home_custom_blocks !== undefined ? settings.home_custom_blocks : (existingBlockStyles.home_custom_blocks ?? {}),
+      topics_display: settings.topics_display !== undefined ? settings.topics_display : (existingBlockStyles.topics_display ?? 'card'),
+      home_topics_display: settings.home_topics_display !== undefined ? settings.home_topics_display : (existingBlockStyles.home_topics_display ?? existingBlockStyles.topics_display ?? 'card'),
+      topics_page_display: settings.topics_page_display !== undefined ? settings.topics_page_display : (existingBlockStyles.topics_page_display ?? existingBlockStyles.topics_display ?? 'card'),
+      featured_topic_ids: settings.featured_topic_ids !== undefined ? settings.featured_topic_ids : (existingBlockStyles.featured_topic_ids ?? []),
+      topics_description: settings.topics_description !== undefined ? settings.topics_description : (existingBlockStyles.topics_description ?? null),
+      topics_guide: settings.topics_guide !== undefined ? settings.topics_guide : (existingBlockStyles.topics_guide ?? null),
+      theme_palette: settings.theme_palette !== undefined ? settings.theme_palette : (settings.block_styles?.theme_palette !== undefined ? settings.block_styles.theme_palette : (existingBlockStyles.theme_palette ?? 'indigo')),
     };
 
     const existingAuthorProfile = existing?.author_profile || {};
@@ -96,6 +105,7 @@ export async function POST(req: NextRequest) {
       clearDataCache();
       revalidatePath('/');
       revalidatePath('/', 'layout');
+      revalidatePath('/chuyen-de');
       revalidatePath('/tro-ly-ai');
     } catch {
       // Bỏ qua
@@ -114,6 +124,9 @@ export async function POST(req: NextRequest) {
         flat_books_title: updatedBlockStyles.flat_books_title,
         flat_books: updatedBlockStyles.flat_books,
         topics_title: updatedBlockStyles.topics_title,
+        home_topics_display: updatedBlockStyles.home_topics_display,
+        topics_page_display: updatedBlockStyles.topics_page_display,
+        featured_topic_ids: updatedBlockStyles.featured_topic_ids,
       },
     });
   } catch (err: any) {

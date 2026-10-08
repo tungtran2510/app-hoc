@@ -7,7 +7,11 @@ import { checkAdminStatus, isSuperAdmin } from '../lib/adminAuth';
 import AdminSettingsModal from './admin/AdminSettingsModal';
 
 
-export default function TopicHeaderNav() {
+interface TopicHeaderNavProps {
+  topicTitle?: string;
+}
+
+export default function TopicHeaderNav({ topicTitle }: TopicHeaderNavProps) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSuper, setIsSuper] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -21,27 +25,38 @@ export default function TopicHeaderNav() {
 
   return (
     <>
-      <nav aria-label="Đường dẫn quay lại" className="flex items-center justify-between">
+      <nav
+        aria-label="Đường dẫn quay lại"
+        className="w-full bg-teal-700 text-white rounded-2xl px-4 py-3 flex items-center justify-between shadow-xs mb-1"
+      >
         <Link
           href="/"
           prefetch={true}
-          className="inline-flex items-center gap-1 h-[48px] min-h-[48px] text-[#1E3A8A] hover:text-[#172554] dark:text-[#F8DF7B] text-[17px] font-extrabold transition-opacity active:opacity-75"
+          className="inline-flex items-center gap-1 text-white font-bold text-sm sm:text-base transition-opacity active:opacity-75"
           aria-label="Quay lại Trang chủ"
         >
-          <ChevronLeft size={24} strokeWidth={2.5} />
+          <ChevronLeft size={22} strokeWidth={2.5} />
           <span>Trang chủ</span>
         </Link>
 
-        {isSuper && (
+        {topicTitle && (
+          <span className="text-sm sm:text-base font-extrabold text-white truncate max-w-[200px] sm:max-w-[260px] text-center">
+            {topicTitle}
+          </span>
+        )}
+
+        {isSuper ? (
           <button
             type="button"
             onClick={() => setShowSettings(true)}
-            className="flex items-center gap-1 h-8 px-2.5 rounded-full bg-blue-50 text-[#1E3A8A] dark:bg-purple-950 dark:text-[#F8DF7B] font-bold text-[12px] border border-blue-200 dark:border-purple-700/60 shadow-2xs hover:bg-blue-100"
+            className="flex items-center gap-1 h-7 px-2.5 rounded-full bg-teal-800 text-white font-bold text-[11px] border border-teal-600 shadow-2xs hover:bg-teal-900"
             title="Cài đặt quản trị & Giảng viên"
           >
-            <Settings size={14} />
+            <Settings size={13} />
             <span>Quản trị</span>
           </button>
+        ) : (
+          <div className="w-6" />
         )}
       </nav>
 
