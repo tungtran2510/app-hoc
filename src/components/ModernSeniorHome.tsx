@@ -952,18 +952,18 @@ export default function ModernSeniorHome({
                     <Link
                       key={topic.id || topic.slug}
                       href={`/${topic.slug}`}
-                      className="flex flex-col items-center justify-center gap-3 p-4 sm:p-5 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-100/90 dark:border-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:-translate-y-0.5 transition-all text-center group cursor-pointer aspect-[1.12/1]"
+                      className="h-[142px] flex flex-col items-center justify-center gap-2.5 p-3 rounded-[24px] bg-white dark:bg-slate-900 border border-slate-100/90 dark:border-slate-800 shadow-[0_4px_16px_rgba(0,0,0,0.03)] hover:shadow-md hover:-translate-y-0.5 transition-all text-center group cursor-pointer"
                     >
-                      <div className={`w-15 h-15 sm:w-16 sm:h-16 rounded-full flex items-center justify-center p-2.5 ${conf.bgCircle} shadow-2xs group-hover:scale-110 transition-transform`}>
+                      <div className={`w-14 h-14 rounded-full flex items-center justify-center p-2.5 shrink-0 ${conf.bgCircle} shadow-2xs group-hover:scale-110 transition-transform overflow-hidden`}>
                         <img
                           src={conf.iconUrl}
                           alt={conf.displayTitle}
-                          className="max-h-full max-w-full object-contain drop-shadow-xs"
+                          className="w-full h-full object-contain drop-shadow-xs"
                           loading="lazy"
                         />
                       </div>
 
-                      <span className="text-[14px] sm:text-[15px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors leading-tight">
+                      <span className="text-[14px] sm:text-[15px] font-bold text-slate-800 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors leading-snug px-1 line-clamp-1">
                         {conf.displayTitle}
                       </span>
                     </Link>
